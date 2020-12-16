@@ -30,7 +30,10 @@
 #include <linux/usb/phy.h>
 #include <linux/extcon.h>
 #include <linux/pm_runtime.h>
-
+#ifdef CONFIG_IWG27S
+#include <linux/of_gpio.h>
+#include <linux/gpio.h>
+#endif
 #include "cdns3-nxp-reg-def.h"
 #include "core.h"
 #include "host-export.h"
@@ -608,6 +611,10 @@ static int cdns3_probe(struct platform_device *pdev)
 	struct cdns3 *cdns;
 	void __iomem *regs;
 	int ret;
+#ifdef CONFIG_IWG27S
+	int rst_gpio;
+	struct device_node *np;
+#endif
 
 	cdns = devm_kzalloc(dev, sizeof(*cdns), GFP_KERNEL);
 	if (!cdns)
@@ -661,6 +668,19 @@ static int cdns3_probe(struct platform_device *pdev)
 	if (IS_ERR(regs))
 		return PTR_ERR(regs);
 	cdns->otg_regs = regs;
+
+#ifdef CONFIG_IWG27S
+	/* IWG27S: USB: Setting USB Hub Reset GPIO */
+	np = of_find_compatible_node(NULL, NULL, "Cadence,usb3");       
+	rst_gpio = of_get_named_gpio(np, "hub-reset-gpio", 0);
+	if (gpio_is_valid(rst_gpio) &&
+			!gpio_request_one(rst_gpio, GPIOF_DIR_OUT, "HUB_RESET")) {
+		/*IWG27S: Setting GPIO value to low*/  
+		gpio_set_value(rst_gpio, 0);
+	}
+	mdelay(10); 
+	gpio_set_value(rst_gpio, 1);
+#endif
 
 	mutex_init(&cdns->mutex);
 	ret = cdns3_get_clks(dev);

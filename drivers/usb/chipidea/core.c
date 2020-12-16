@@ -62,6 +62,10 @@
 #include <linux/of.h>
 #include <linux/regulator/consumer.h>
 #include <linux/usb/ehci_def.h>
+#ifdef CONFIG_IWG27S
+#include <linux/of_gpio.h>
+#include <linux/gpio.h>
+#endif
 
 #include "ci.h"
 #include "udc.h"
@@ -539,6 +543,10 @@ static irqreturn_t ci_irq(int irq, void *data)
 	struct ci_hdrc *ci = data;
 	irqreturn_t ret = IRQ_NONE;
 	u32 otgsc = 0;
+#ifdef CONFIG_IWG27S
+	int otg_pwr_gpio = 0, otg_id = 0;
+	struct device_node *np;
+#endif
 
 	if (ci->in_lpm) {
 		disable_irq_nosync(irq);
@@ -549,6 +557,17 @@ static irqreturn_t ci_irq(int irq, void *data)
 
 	if (ci->is_otg) {
 		otgsc = hw_read_otgsc(ci, ~0);
+#ifdef CONFIG_IWG27S
+		/* IWG27S: Configuring OTG Over Current GPIO based on USB OTG_ID */
+		np = of_find_compatible_node(NULL, NULL, "fsl,imx8qm-usb");
+		if (np)
+			otg_pwr_gpio = of_get_named_gpio(np, "otg-pwr-gpio", 0);
+		else
+			pr_warn("\nError: Unable to get OTG pwr gpio input\n");
+
+		gpio_request_one(otg_pwr_gpio, GPIOF_DIR_IN, "OTG_PWR");
+
+#endif
 		if (ci_otg_is_fsm_mode(ci)) {
 			ret = ci_otg_fsm_irq(ci);
 			if (ret == IRQ_HANDLED)
