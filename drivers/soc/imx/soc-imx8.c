@@ -39,6 +39,7 @@ struct imx8_soc_data {
 	u32 (*soc_revision)(void);
 };
 
+u64 soc_uid_read(void);
 static u64 soc_uid;
 
 static ssize_t soc_uid_show(struct device *dev,
@@ -261,6 +262,7 @@ void print_board_info (void)
 	printk ("Board Info:\n");
 	printk ("\tBSP Version     : %s\n", BSP_VERSION);
 	printk ("\tSOM Version     : iW-PRGEE-AP-01-R%x.%x\n", pcb_rev, bom_rev);
+	printk ("\tCPU Unique ID   : 0X%016llX\n",soc_uid_read());
 	printk ("\n");
 
 }
