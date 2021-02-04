@@ -60,6 +60,30 @@ static ssize_t soc_uid_show(struct device *dev,
 
 static DEVICE_ATTR_RO(soc_uid);
 
+/*IWG27M: Adding CPU Unique ID read support*/
+u64 soc_uid_read(void)
+{
+        struct imx_sc_msg_misc_get_soc_uid msg;
+        struct imx_sc_rpc_msg *hdr = &msg.hdr;
+	u64 soc_uid_imx8;
+
+        memset(&msg, 0, sizeof(msg));
+
+        hdr->ver = IMX_SC_RPC_VERSION;
+        hdr->svc = IMX_SC_RPC_SVC_MISC;
+        hdr->func = IMX_SC_MISC_FUNC_UNIQUE_ID;
+        hdr->size = 1;
+
+        imx_scu_call_rpc(soc_ipc_handle, &msg, true);
+
+        soc_uid_imx8 = msg.uid_high;
+        soc_uid_imx8 <<= 32;
+        soc_uid_imx8 |= msg.uid_low;
+
+	return soc_uid_imx8;
+
+}
+
 static int imx_scu_soc_id(void)
 {
 	struct imx_sc_msg_misc_get_soc_id msg;

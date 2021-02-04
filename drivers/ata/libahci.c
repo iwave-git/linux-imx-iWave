@@ -992,10 +992,22 @@ static void ahci_sw_activity_blink(struct timer_list *t)
 		/* get the current LED state */
 		activity_led_state = led_message & EM_MSG_LED_VALUE_ON;
 
+#ifdef CONFIG_IWG27M
+		/* IWG27M: Added for SATA activity LED support */
+		if (activity_led_state){
+			imx8_iwg27m_sata_act_led_flip(activity_led_state);
+			activity_led_state = 0;
+		}
+		else {
+			imx8_iwg27m_sata_act_led_flip(activity_led_state);
+			activity_led_state = 1;
+		}
+#else
 		if (activity_led_state)
 			activity_led_state = 0;
 		else
 			activity_led_state = 1;
+#endif
 
 		/* clear old state */
 		led_message &= ~EM_MSG_LED_VALUE_ACTIVITY;
@@ -1023,6 +1035,11 @@ static void ahci_init_sw_activity(struct ata_link *link)
 	emp->saved_activity = emp->activity = 0;
 	emp->link = link;
 	timer_setup(&emp->timer, ahci_sw_activity_blink, 0);
+
+#ifdef CONFIG_IWG27M
+	/* IWG27M: Added for SATA activity LED support */
+	emp->blink_policy = BLINK_OFF;
+#endif
 
 	/* check our blink policy and set flag for link if it's enabled */
 	if (emp->blink_policy)

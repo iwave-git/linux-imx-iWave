@@ -888,11 +888,14 @@ static int fsl_lpspi_probe(struct platform_device *pdev)
 	controller->bus_num = pdev->id;
 	controller->slave_abort = fsl_lpspi_slave_abort;
 
+#ifndef CONFIG_IWG27M
+	/* IWG27M: Changing the order of SPI controller registration */
 	ret = devm_spi_register_controller(&pdev->dev, controller);
 	if (ret < 0) {
 		dev_err(&pdev->dev, "spi_register_controller error.\n");
 		goto out_controller_put;
 	}
+#endif
 
 	if (!fsl_lpspi->is_slave) {
 		controller->cs_gpios = devm_kzalloc(&controller->dev,
@@ -975,6 +978,15 @@ static int fsl_lpspi_probe(struct platform_device *pdev)
 
 	if (ret < 0)
 		dev_err(&pdev->dev, "dma setup error %d, use pio\n", ret);
+
+#ifdef CONFIG_IWG27M
+	/* IWG27M: Changing the order of SPI controller registration */
+	ret = devm_spi_register_controller(&pdev->dev, controller);
+	if (ret < 0) {
+		dev_err(&pdev->dev, "spi_register_controller error.\n");
+		goto out_controller_put;
+	}
+#endif
 
 	return 0;
 

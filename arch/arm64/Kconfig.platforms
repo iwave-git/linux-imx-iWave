@@ -182,6 +182,14 @@ config ARCH_MXC
 	  This enables support for the ARMv8 based SoCs in the
 	  NXP i.MX family.
 
+config IWG27M
+	bool "Enable Support for iWave IWG27M"
+	depends on ARCH_MXC
+	default y
+	help
+	  This enables support for the iWave's IWG27M Platform. If you don't
+	  know what to do here, say N
+
 config HAVE_IMX_BUSFREQ
 	bool "i.MX8M busfreq"
 

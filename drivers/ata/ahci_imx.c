@@ -23,6 +23,11 @@
 
 #define DRV_NAME "ahci-imx"
 
+#ifdef CONFIG_IWG27M
+/* IWG27M: Added for SATA activity LED support */
+int act_led_gpio;
+#endif
+
 enum {
 	/* Timer 1-ms Register */
 	IMX_TIMER1MS				= 0x00e0,
@@ -1057,7 +1062,12 @@ static struct ata_port_operations ahci_imx_ops = {
 };
 
 static const struct ata_port_info ahci_imx_port_info = {
+#ifdef CONFIG_IWG27M
+	/* IWG27M: SATA: Adding sw activity led support */
+	.flags          = AHCI_FLAG_COMMON | ATA_FLAG_SW_ACTIVITY,
+#else
 	.flags		= AHCI_FLAG_COMMON,
+#endif
 	.pio_mask	= ATA_PIO4,
 	.udma_mask	= ATA_UDMA6,
 	.port_ops	= &ahci_imx_ops,
@@ -1231,6 +1241,15 @@ static u32 imx_ahci_parse_props(struct device *dev,
 	return reg_value;
 }
 
+#ifdef CONFIG_IWG27M
+/* IWG27M: Added for SATA activity LED support */
+void imx8_iwg27m_sata_act_led_flip(int value)
+{
+	if (gpio_is_valid(act_led_gpio))
+		gpio_set_value(act_led_gpio, value);
+}
+#endif
+
 static struct scsi_host_template ahci_platform_sht = {
 	AHCI_SHT(DRV_NAME),
 };
@@ -1349,6 +1368,19 @@ static int imx8_sata_probe(struct device *dev, struct imx_ahci_priv *imxpriv)
 	} else if (imxpriv->clkreq_gpio == -EPROBE_DEFER) {
 		return imxpriv->clkreq_gpio;
 	}
+
+#ifdef CONFIG_IWG27M
+	/* IWG27M: Added for SATA activity LED support */
+	act_led_gpio = of_get_named_gpio(np, "sata-act-gpios", 0);
+	if (gpio_is_valid(act_led_gpio)) {
+		devm_gpio_request_one(dev, act_led_gpio,
+				GPIOF_OUT_INIT_LOW,
+				"SATA ACT LED");
+		gpio_set_value(act_led_gpio, 1);
+	} else if (act_led_gpio == -EPROBE_DEFER) {
+		return act_led_gpio;
+	}
+#endif
 
 	return 0;
 }

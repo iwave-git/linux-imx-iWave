@@ -109,6 +109,7 @@ struct panel_simple {
 	struct i2c_adapter *ddc;
 
 	struct gpio_desc *enable_gpio;
+	struct gpio_desc *backlight_gpio;
 
 	struct drm_display_mode override_mode;
 };
@@ -256,6 +257,7 @@ static int panel_simple_unprepare(struct drm_panel *panel)
 	if (!p->prepared)
 		return 0;
 
+	gpiod_set_value_cansleep(p->backlight_gpio, 0);
 	gpiod_set_value_cansleep(p->enable_gpio, 0);
 
 	regulator_disable(p->supply);
@@ -283,6 +285,8 @@ static int panel_simple_prepare(struct drm_panel *panel)
 		return err;
 	}
 
+	gpiod_set_value_cansleep(p->backlight_gpio, 1);
+	mdelay(10);
 	gpiod_set_value_cansleep(p->enable_gpio, 1);
 
 	delay = p->desc->delay.prepare;
@@ -440,6 +444,15 @@ static int panel_simple_probe(struct device *dev, const struct panel_desc *desc)
 			dev_err(dev, "failed to request GPIO: %d\n", err);
 		return err;
 	}
+
+        panel->backlight_gpio = devm_gpiod_get_optional(dev, "bklgt",
+                                                     GPIOD_OUT_LOW);
+        if (IS_ERR(panel->backlight_gpio)) {
+                err = PTR_ERR(panel->backlight_gpio);
+                if (err != -EPROBE_DEFER)
+                        dev_err(dev, "failed to request GPIO: %d\n", err);
+                return err;
+        }
 
 	backlight = of_parse_phandle(dev->of_node, "backlight", 0);
 	if (backlight) {
@@ -1335,7 +1348,7 @@ static const struct panel_desc edt_etm0700g0dh6 = {
 		.width = 152,
 		.height = 91,
 	},
-	.bus_format = MEDIA_BUS_FMT_RGB666_1X18,
+	.bus_format = MEDIA_BUS_FMT_RBG888_1X24,
 	.bus_flags = DRM_BUS_FLAG_DE_HIGH | DRM_BUS_FLAG_PIXDATA_DRIVE_NEGEDGE,
 };
 
@@ -1347,7 +1360,7 @@ static const struct panel_desc edt_etm0700g0bdh6 = {
 		.width = 152,
 		.height = 91,
 	},
-	.bus_format = MEDIA_BUS_FMT_RGB666_1X18,
+	.bus_format = MEDIA_BUS_FMT_RBG888_1X24,
 	.bus_flags = DRM_BUS_FLAG_DE_HIGH | DRM_BUS_FLAG_PIXDATA_DRIVE_POSEDGE,
 };
 

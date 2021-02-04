@@ -259,11 +259,12 @@ int of_mdiobus_register(struct mii_bus *mdio, struct device_node *np)
 			/* skip already registered PHYs */
 			if (mdiobus_is_registered_device(mdio, addr))
 				continue;
-
+#ifndef CONFIG_IWG27M
+/* IWG27M: Ethernet: Commenting Ethernet PHY address print */
 			/* be noisy to encourage people to set reg property */
 			dev_info(&mdio->dev, "scan phy %pOFn at address %i\n",
 				 child, addr);
-
+#endif
 			if (of_mdiobus_child_is_phy(child)) {
 				rc = of_mdiobus_register_phy(mdio, child, addr);
 				if (rc && rc != -ENODEV)

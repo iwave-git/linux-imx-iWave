@@ -864,8 +864,11 @@ int wiphy_register(struct wiphy *wiphy)
 		 * VENDOR_CMD_RAW_DATA which is non-NULL) and also that
 		 * we have at least one of doit/dumpit.
 		 */
+#ifndef CONFIG_IWG27M
+		/* IWG27M: WIFI-BT: Workaround for WIFI firmware loading issue */
 		if (WARN_ON(!rdev->wiphy.vendor_commands[i].policy))
 			return -EINVAL;
+#endif
 		if (WARN_ON(!rdev->wiphy.vendor_commands[i].doit &&
 			    !rdev->wiphy.vendor_commands[i].dumpit))
 			return -EINVAL;

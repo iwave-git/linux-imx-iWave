@@ -59,6 +59,10 @@ static int imx_sgtl5000_probe(struct platform_device *pdev)
 	int int_port, ext_port;
 	int ret;
 
+#ifndef CONFIG_IWG27M
+	/* IWG27M: Audio: Since Audmux is not present in i.MX8,
+	 * Commented the below part
+	 */
 	ret = of_property_read_u32(np, "mux-int-port", &int_port);
 	if (ret) {
 		dev_err(&pdev->dev, "mux-int-port missing or invalid\n");
@@ -94,7 +98,7 @@ static int imx_sgtl5000_probe(struct platform_device *pdev)
 		dev_err(&pdev->dev, "audmux external port setup failed\n");
 		return ret;
 	}
-
+#endif
 	ssi_np = of_parse_phandle(pdev->dev.of_node, "ssi-controller", 0);
 	codec_np = of_parse_phandle(pdev->dev.of_node, "audio-codec", 0);
 	if (!ssi_np || !codec_np) {

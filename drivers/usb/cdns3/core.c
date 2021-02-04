@@ -30,7 +30,10 @@
 #include <linux/usb/phy.h>
 #include <linux/extcon.h>
 #include <linux/pm_runtime.h>
-
+#ifdef CONFIG_IWG27M
+#include <linux/of_gpio.h>
+#include <linux/gpio.h>
+#endif
 #include "cdns3-nxp-reg-def.h"
 #include "core.h"
 #include "host-export.h"
@@ -608,6 +611,10 @@ static int cdns3_probe(struct platform_device *pdev)
 	struct cdns3 *cdns;
 	void __iomem *regs;
 	int ret;
+#ifdef CONFIG_IWG27M
+	int rst_gpio;
+	struct device_node *np;
+#endif
 
 	cdns = devm_kzalloc(dev, sizeof(*cdns), GFP_KERNEL);
 	if (!cdns)
@@ -661,6 +668,31 @@ static int cdns3_probe(struct platform_device *pdev)
 	if (IS_ERR(regs))
 		return PTR_ERR(regs);
 	cdns->otg_regs = regs;
+
+#ifdef CONFIG_IWG27M
+        /* IWG27M: USB: Enabling USB Power Enable Regulator */
+        np = of_find_compatible_node(NULL, NULL, "Cadence,usb3");
+        cdns->reg_vusb = devm_regulator_get(dev, "vusb");
+        if (PTR_ERR(cdns->reg_vusb) == -EPROBE_DEFER) {
+                return -EPROBE_DEFER;
+        } else if (PTR_ERR(cdns->reg_vusb) == -ENODEV) {
+                /* no vusb regulator is needed */
+                cdns->reg_vusb = NULL;
+	} else if (IS_ERR(cdns->reg_vusb)) {
+		if (PTR_ERR(cdns->reg_vusb) != -EPROBE_DEFER)
+			dev_err(dev,
+				"Get HSIC pad regulator error: %ld\n",
+				PTR_ERR(cdns->reg_vusb));
+		return PTR_ERR(cdns->reg_vusb);
+	}
+        mdelay(10);
+        ret = regulator_enable(cdns->reg_vusb);
+        if (ret) {
+                dev_err(cdns->dev,
+                                "Failed to enable vusb regulator, ret=%d\n", ret);
+                goto err0;
+        }
+#endif
 
 	mutex_init(&cdns->mutex);
 	ret = cdns3_get_clks(dev);
@@ -736,6 +768,11 @@ err2:
 	usb_phy_shutdown(cdns->usbphy);
 err1:
 	cdns3_disable_unprepare_clks(dev);
+#ifdef CONFIG_IWG27M
+err0:
+        regulator_disable(cdns->reg_vusb);
+#endif
+
 	return ret;
 }
 
@@ -757,6 +794,9 @@ static int cdns3_remove(struct platform_device *pdev)
 	cdns3_remove_roles(cdns);
 	usb_phy_shutdown(cdns->usbphy);
 	cdns3_disable_unprepare_clks(dev);
+#ifdef CONFIG_IWG27M
+        regulator_disable(cdns->reg_vusb);
+#endif
 
 	return 0;
 }

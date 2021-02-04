@@ -10,6 +10,10 @@
 #include <linux/clk.h>
 #include <linux/err.h>
 #include <linux/init.h>
+#ifdef CONFIG_IWG27M
+/* IWG27M: GPIO: Correcting the GPIO driver initialization sequence */
+#include <linux/module.h>
+#endif
 #include <linux/interrupt.h>
 #include <linux/io.h>
 #include <linux/irq.h>
@@ -895,4 +899,9 @@ static int __init gpio_mxc_init(void)
 
 	return platform_driver_register(&mxc_gpio_driver);
 }
+#ifdef CONFIG_IWG27M
+/* IWG27M: GPIO: Correcting the GPIO driver initialization sequence */
+module_init(gpio_mxc_init);
+#else
 subsys_initcall(gpio_mxc_init);
+#endif

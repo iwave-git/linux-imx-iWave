@@ -421,6 +421,11 @@ int ahci_host_activate(struct ata_host *host, struct scsi_host_template *sht);
 void ahci_error_handler(struct ata_port *ap);
 u32 ahci_handle_port_intr(struct ata_host *host, u32 irq_masked);
 
+#ifdef CONFIG_IWG27M
+/* IWG27M: Added for SATA activity LED support */
+void imx8_iwg27m_sata_act_led_flip(int value);
+#endif
+
 static inline void __iomem *__ahci_port_base(struct ata_host *host,
 					     unsigned int port_no)
 {

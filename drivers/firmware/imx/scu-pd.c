@@ -159,7 +159,12 @@ static const struct imx_sc_pd_range imx8qxp_scu_pd_ranges[] = {
 	{ "adc", IMX_SC_R_ADC_0, 1, true, 0 },
 	{ "lcd", IMX_SC_R_LCD_0, 1, true, 0 },
 	{ "lcd0-pwm", IMX_SC_R_LCD_0_PWM_0, 1, true, 0 },
+#ifdef CONFIG_IWG27M
+	/* IWG27M: LPUART: Adding LPUART4 Support */
+	{ "lpuart", IMX_SC_R_UART_0, 5, true, 0 },
+#else
 	{ "lpuart", IMX_SC_R_UART_0, 4, true, 0 },
+#endif
 	{ "sim", IMX_SC_R_EMVSIM_0, 2, true, 0 },
 	{ "lpspi", IMX_SC_R_SPI_0, 4, true, 0 },
 	{ "irqstr_dsp", IMX_SC_R_IRQSTR_DSP, 1, false, 0 },

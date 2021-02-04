@@ -1,0 +1,88 @@
+// SPDX-License-Identifier: GPL-2.0+
+/*
+ * Copyright (c) 2020 iWave Systems Technologies Pvt. Ltd.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+/dts-v1/;
+
+#include "imx8qp-iwg27d.dts"
+/delete-node/ &unused_gpios;
+
+&iomuxc {
+        pinctrl-names = "default";
+        pinctrl-0 = <&pinctrl_hog>;
+
+        imx8qm-iwg27m {
+                pinctrl_hog: hoggrp {
+                        fsl,pins = <
+                                IMX8QM_MIPI_DSI0_I2C0_SDA_MIPI_DSI0_I2C0_SDA            0x06000020
+                                IMX8QM_MIPI_DSI0_I2C0_SCL_MIPI_DSI0_I2C0_SCL            0x06000020
+                                IMX8QM_FLEXCAN1_TX_DMA_FLEXCAN1_TX                      0x06000020
+                                IMX8QM_FLEXCAN1_RX_DMA_FLEXCAN1_RX                      0x06000020
+                                IMX8QM_FLEXCAN2_TX_DMA_FLEXCAN2_TX                      0x06000020
+                                IMX8QM_FLEXCAN2_RX_DMA_FLEXCAN2_RX                      0x06000020
+                                IMX8QM_ENET1_RGMII_TXC_CONN_ENET1_RGMII_TXC             0x06000020
+                                IMX8QM_ENET1_RGMII_TX_CTL_CONN_ENET1_RGMII_TX_CTL       0x06000020
+                                IMX8QM_ENET1_RGMII_TXD0_CONN_ENET1_RGMII_TXD0           0x06000020
+                                IMX8QM_ENET1_RGMII_TXD1_CONN_ENET1_RGMII_TXD1           0x06000020
+                                IMX8QM_ENET1_RGMII_TXD2_CONN_ENET1_RGMII_TXD2           0x06000020
+                                IMX8QM_ENET1_RGMII_TXD3_CONN_ENET1_RGMII_TXD3           0x06000020
+                                IMX8QM_ENET1_RGMII_RXC_CONN_ENET1_RGMII_RXC             0x06000020      
+                                IMX8QM_ENET1_RGMII_RX_CTL_CONN_ENET1_RGMII_RX_CTL       0x06000020
+                                IMX8QM_ENET1_RGMII_RXD0_CONN_ENET1_RGMII_RXD0           0x06000020
+                                IMX8QM_ENET1_RGMII_RXD2_CONN_ENET1_RGMII_RXD2           0x06000020
+                                IMX8QM_ENET1_RGMII_RXD3_CONN_ENET1_RGMII_RXD3           0x06000020      
+                                IMX8QM_ENET1_REFCLK_125M_25M_CONN_ENET1_REFCLK_125M_25M 0x06000020
+                                IMX8QM_ENET1_MDIO_CONN_ENET1_MDIO                       0x06000020      
+                                IMX8QM_ENET1_MDC_CONN_ENET1_MDC                         0x06000020
+                                IMX8QM_ADC_IN4_DMA_ADC1_IN0                             0x06000020
+                                IMX8QM_ADC_IN5_DMA_ADC1_IN1                             0x06000020      
+                                IMX8QM_LVDS0_GPIO00_LSIO_GPIO1_IO04                     0x00000021
+                                IMX8QM_MIPI_DSI1_I2C0_SCL_LSIO_GPIO1_IO20               0x00000021
+                                IMX8QM_MIPI_DSI1_I2C0_SDA_LSIO_GPIO1_IO21               0x00000021
+                                IMX8QM_M41_GPIO0_00_DMA_UART3_RX                        0x06000020
+                                IMX8QM_M41_GPIO0_01_DMA_UART3_TX                        0x06000020
+                                IMX8QM_LVDS0_I2C0_SDA_LVDS0_I2C0_SDA                    0x06000020
+                                IMX8QM_LVDS0_I2C0_SCL_LVDS0_I2C0_SCL                    0x06000020
+                                IMX8QM_QSPI1A_SS0_B_LSIO_QSPI1A_SS0_B                   0x06000020
+                                IMX8QM_QSPI1A_SS1_B_LSIO_QSPI1A_SS1_B                   0x06000020
+                                IMX8QM_QSPI1A_SCLK_LSIO_QSPI1A_SCLK                     0x06000020
+                                IMX8QM_QSPI1A_DQS_LSIO_QSPI1A_DQS                       0x06000020
+                                IMX8QM_QSPI1A_DATA3_LSIO_QSPI1A_DATA3                   0x06000020
+                                IMX8QM_QSPI1A_DATA2_LSIO_QSPI1A_DATA2                   0x06000020
+                                IMX8QM_QSPI1A_DATA1_LSIO_QSPI1A_DATA1                   0x06000020
+                                IMX8QM_QSPI1A_DATA0_LSIO_QSPI1A_DATA0                   0x06000020
+                                IMX8QM_ESAI1_SCKR_AUD_ESAI1_SCKR                        0x06000020
+                                IMX8QM_ESAI1_FSR_AUD_ESAI1_FSR                          0x06000020
+                                IMX8QM_ESAI1_TX0_AUD_ESAI1_TX0                          0x06000020
+                                IMX8QM_ESAI1_TX2_RX3_AUD_ESAI1_TX2_RX3                  0x06000020
+                                IMX8QM_ESAI1_TX3_RX2_AUD_ESAI1_TX3_RX2                  0x06000020
+                                IMX8QM_ESAI1_TX4_RX1_AUD_ESAI1_TX4_RX1                  0x06000020
+                                IMX8QM_ESAI1_TX5_RX0_AUD_ESAI1_TX5_RX0                  0x06000020
+                                IMX8QM_SPDIF0_RX_AUD_SPDIF0_RX                          0x06000020
+                                IMX8QM_SPDIF0_TX_AUD_SPDIF0_TX                          0x06000020
+                                IMX8QM_SPDIF0_EXT_CLK_AUD_SPDIF0_EXT_CLK                0x06000020
+                                IMX8QM_MLB_CLK_LSIO_GPIO3_IO27                          0x00000021
+                                IMX8QM_MLB_SIG_LSIO_GPIO3_IO26                          0x00000021
+                                IMX8QM_MLB_DATA_LSIO_GPIO3_IO28                         0x00000021
+                                IMX8QM_SPI2_SCK_DMA_SPI2_SCK                            0x06000020
+                                IMX8QM_SPI2_SDO_DMA_SPI2_SDO                            0x06000020
+                                IMX8QM_SPI2_SDI_DMA_SPI2_SDI                            0x06000020
+                                IMX8QM_SPI2_CS0_DMA_SPI2_CS0                            0x06000020
+                        >;
+                };
+        };
+};
+
+
+

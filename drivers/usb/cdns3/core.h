@@ -68,6 +68,7 @@ struct cdns3_role_driver {
  * @extcon: Type-C extern connector
  * @extcon_nb: notifier block for Type-C extern connector
  * @role_switch_wq: work queue item for role switch
+ * @reg_vusb: regulator for enabling USB Hub
  * @in_lpm: the controller in low power mode
  * @wakeup_int: the wakeup interrupt
  * @mutex: the mutex for concurrent code at driver
@@ -90,6 +91,9 @@ struct cdns3 {
 	struct extcon_dev *extcon;
 	struct notifier_block extcon_nb;
 	struct work_struct role_switch_wq;
+#ifdef CONFIG_IWG27M
+	struct regulator *reg_vusb;
+#endif
 	bool in_lpm;
 	bool wakeup_int;
 	struct mutex mutex;
