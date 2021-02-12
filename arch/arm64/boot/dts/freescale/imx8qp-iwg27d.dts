@@ -16,7 +16,7 @@
 #include "imx8qm-iwg27d.dts"
 
 / {
-	model = "iW-RainboW-G27D-i.MX8QP-SMARC";
+	model = "iW-RainboW-G27D-i.MX8QP-Q7";
 	compatible = "fsl,imx8qp-iwg27m", "fsl,imx8qp", "fsl,imx8qm";
 };
 

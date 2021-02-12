@@ -132,7 +132,7 @@
 		pinctrl-names = "default";
 		pinctrl-0 = <&pinctrl_board_cfg>;
 		som-rev-gpios = <&lsio_gpio2 9 0>, <&lsio_gpio4 22 0>, <&lsio_gpio4 11 0>,  <&lsio_gpio3 24 0>,
-			<&lsio_gpio2 7 0>, <&lsio_gpio3 1 0>, <&lsio_gpio3 25 0>, <&lsio_gpio5 23 0>;
+			<&lsio_gpio2 7 0>, <&lsio_gpio3 1 0>, <&lsio_gpio3 25 0>;
 		status = "okay";
 	};
 
@@ -232,7 +232,11 @@
 };
 
 &hsio_refb_clk {
-	status = "okay";
+	status = "disabled";
+};
+
+&hsio_refa_clk {
+        status = "disabled";
 };
 
 &sai5 {

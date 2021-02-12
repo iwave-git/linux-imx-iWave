@@ -299,69 +299,67 @@
 
 		pinctrl_unused_gpio: unused_gpiogrp{ /* GPIO: Unused GPIOs IOMUX Pin Configuration */
 			fsl,pins = <
-				IMX8QM_MIPI_DSI0_I2C0_SDA_LSIO_GPIO1_IO17		0x00000021
-				IMX8QM_MIPI_DSI0_I2C0_SCL_LSIO_GPIO1_IO16		0x00000021
-				IMX8QM_FLEXCAN1_TX_LSIO_GPIO4_IO00			0x00000021
-				IMX8QM_FLEXCAN1_RX_LSIO_GPIO3_IO31			0x00000021
-				IMX8QM_FLEXCAN2_TX_LSIO_GPIO4_IO02			0x00000021
+                                IMX8QM_M41_GPIO0_00_LSIO_GPIO0_IO12                     0x00000021
+                                IMX8QM_M41_GPIO0_01_LSIO_GPIO0_IO13                     0x00000021
+                                IMX8QM_LVDS0_GPIO00_LSIO_GPIO1_IO04                     0x00000021
+                                IMX8QM_LVDS0_I2C0_SCL_LSIO_GPIO1_IO06                   0x00000021
+                                IMX8QM_LVDS0_I2C0_SDA_LSIO_GPIO1_IO07                   0x00000021
+                                IMX8QM_MIPI_DSI0_I2C0_SCL_LSIO_GPIO1_IO16               0x00000021
+                                IMX8QM_MIPI_DSI0_I2C0_SDA_LSIO_GPIO1_IO17               0x00000021
+                                IMX8QM_MIPI_DSI1_I2C0_SCL_LSIO_GPIO1_IO20               0x00000021
+                                IMX8QM_MIPI_DSI1_I2C0_SDA_LSIO_GPIO1_IO21               0x00000021
+                                IMX8QM_ESAI1_FSR_LSIO_GPIO2_IO04                        0x00000021
+                                IMX8QM_ESAI1_SCKR_LSIO_GPIO2_IO06                       0x00000021
+                                IMX8QM_ESAI1_TX0_LSIO_GPIO2_IO08                        0x00000021
+                                IMX8QM_ESAI1_TX2_RX3_LSIO_GPIO2_IO10                    0x00000021
+                                IMX8QM_ESAI1_TX3_RX2_LSIO_GPIO2_IO11                    0x00000021
+                                IMX8QM_ESAI1_TX4_RX1_LSIO_GPIO2_IO12                    0x00000021
+                                IMX8QM_ESAI1_TX5_RX0_LSIO_GPIO2_IO13                    0x00000021
+                                IMX8QM_SPDIF0_RX_LSIO_GPIO2_IO14                        0x00000021
+                                IMX8QM_SPDIF0_TX_LSIO_GPIO2_IO15                        0x00000021
+                                IMX8QM_SPDIF0_EXT_CLK_LSIO_GPIO2_IO16                   0x00000021
+                                IMX8QM_SPI2_SCK_LSIO_GPIO3_IO07                         0x00000021
+                                IMX8QM_SPI2_SDO_LSIO_GPIO3_IO08                         0x00000021
+                                IMX8QM_SPI2_SDI_LSIO_GPIO3_IO09                         0x00000021
+                                IMX8QM_SPI2_CS0_LSIO_GPIO3_IO10                         0x00000021
+                                IMX8QM_ADC_IN4_LSIO_GPIO3_IO22                          0x00000021
+                                IMX8QM_ADC_IN5_LSIO_GPIO3_IO23                          0x00000021
+                                IMX8QM_MLB_SIG_LSIO_GPIO3_IO26                          0x00000021
+                                IMX8QM_MLB_CLK_LSIO_GPIO3_IO27                          0x00000021
+                                IMX8QM_MLB_DATA_LSIO_GPIO3_IO28                         0x00000021
+                                IMX8QM_FLEXCAN1_RX_LSIO_GPIO3_IO31                      0x00000021
+                                IMX8QM_FLEXCAN1_TX_LSIO_GPIO4_IO00                      0x00000021
 				IMX8QM_FLEXCAN2_RX_LSIO_GPIO4_IO01			0x00000021
-				IMX8QM_ENET1_RGMII_TXC_LSIO_GPIO6_IO10			0x00000021
-				IMX8QM_ENET1_RGMII_TX_CTL_LSIO_GPIO6_IO11		0x00000021
-				IMX8QM_ENET1_RGMII_TXD0_LSIO_GPIO6_IO12			0x00000021
-				IMX8QM_ENET1_RGMII_TXD1_LSIO_GPIO6_IO13			0x00000021
-				IMX8QM_ENET1_RGMII_TXD2_DMA_UART3_TX			0x00000021
-				IMX8QM_ENET1_RGMII_TXD3_LSIO_GPIO6_IO15			0x00000021
-				IMX8QM_ENET1_RGMII_RXC_LSIO_GPIO6_IO16			0x00000021
-				IMX8QM_ENET1_RGMII_RX_CTL_LSIO_GPIO6_IO17		0x00000021
-				IMX8QM_ENET1_RGMII_RXD0_LSIO_GPIO6_IO18			0x00000021
-				IMX8QM_ENET1_RGMII_RXD1_LSIO_GPIO6_IO19			0x00000021
-				IMX8QM_ENET1_RGMII_RXD2_LSIO_GPIO6_IO20			0x00000021
-				IMX8QM_ENET1_RGMII_RXD3_LSIO_GPIO6_IO21			0x00000021
-				IMX8QM_ENET1_REFCLK_125M_25M_LSIO_GPIO4_IO16		0x00000021
-				IMX8QM_ENET1_MDIO_LSIO_GPIO4_IO17			0x00000021
-				IMX8QM_ENET1_MDC_LSIO_GPIO4_IO18			0x00000021
-				IMX8QM_ADC_IN4_LSIO_GPIO3_IO22				0x00000021
-				IMX8QM_ADC_IN5_LSIO_GPIO3_IO23				0x00000021
-				IMX8QM_LVDS0_GPIO00_LSIO_GPIO1_IO04			0x00000021
-				IMX8QM_MIPI_DSI1_I2C0_SCL_LSIO_GPIO1_IO20		0x00000021
-				IMX8QM_MIPI_DSI1_I2C0_SDA_LSIO_GPIO1_IO21		0x00000021
-				IMX8QM_M41_GPIO0_00_LSIO_GPIO0_IO12			0x00000021
-				IMX8QM_M41_GPIO0_01_LSIO_GPIO0_IO13			0x00000021
-				IMX8QM_LVDS0_I2C0_SDA_LSIO_GPIO1_IO07			0x00000021
-				IMX8QM_LVDS0_I2C0_SCL_LSIO_GPIO1_IO06			0x00000021
-				IMX8QM_QSPI1A_SS0_B_LSIO_GPIO4_IO19			0x00000021
-				IMX8QM_QSPI1A_SS1_B_LSIO_GPIO4_IO20			0x00000021
-				IMX8QM_QSPI1A_SCLK_LSIO_GPIO4_IO21			0x00000021
-				IMX8QM_QSPI1A_DQS_LSIO_GPIO4_IO22			0x00000021
-				IMX8QM_QSPI1A_DATA3_LSIO_GPIO4_IO23			0x00000021
-				IMX8QM_QSPI1A_DATA2_LSIO_GPIO4_IO24			0x00000021
-				IMX8QM_QSPI1A_DATA1_LSIO_GPIO4_IO25			0x00000021
-				IMX8QM_QSPI1A_DATA0_LSIO_GPIO4_IO26			0x00000021
-				IMX8QM_ESAI1_SCKR_LSIO_GPIO2_IO06			0x00000021
-				IMX8QM_ESAI1_FSR_LSIO_GPIO2_IO04			0x00000021
-				IMX8QM_ESAI1_TX0_LSIO_GPIO2_IO08			0x00000021
-				IMX8QM_ESAI1_TX2_RX3_LSIO_GPIO2_IO10			0x00000021
-				IMX8QM_ESAI1_TX3_RX2_LSIO_GPIO2_IO11			0x00000021
-				IMX8QM_ESAI1_TX4_RX1_LSIO_GPIO2_IO12			0x00000021
-				IMX8QM_ESAI1_TX5_RX0_LSIO_GPIO2_IO13			0x00000021
-				IMX8QM_SPDIF0_RX_LSIO_GPIO2_IO14			0x00000021
-				IMX8QM_SPDIF0_TX_LSIO_GPIO2_IO15			0x00000021
-				IMX8QM_SPDIF0_EXT_CLK_LSIO_GPIO2_IO16			0x00000021
-				IMX8QM_MLB_CLK_LSIO_GPIO3_IO27				0x00000021
-				IMX8QM_MLB_SIG_LSIO_GPIO3_IO26				0x00000021
-				IMX8QM_MLB_DATA_LSIO_GPIO3_IO28				0x00000021
-				IMX8QM_SPI2_SCK_LSIO_GPIO3_IO07				0x00000021
-				IMX8QM_SPI2_SDO_LSIO_GPIO3_IO08				0x00000021
-				IMX8QM_SPI2_SDI_LSIO_GPIO3_IO09				0x00000021
-				IMX8QM_SPI2_CS0_LSIO_GPIO3_IO10				0x00000021
+                                IMX8QM_FLEXCAN2_TX_LSIO_GPIO4_IO02                      0x00000021
+                                IMX8QM_ENET1_REFCLK_125M_25M_LSIO_GPIO4_IO16            0x00000021
+                                IMX8QM_ENET1_MDIO_LSIO_GPIO4_IO17                       0x00000021
+                                IMX8QM_ENET1_MDC_LSIO_GPIO4_IO18                        0x00000021
+                                IMX8QM_QSPI1A_SS0_B_LSIO_GPIO4_IO19                     0x00000021
+                                IMX8QM_QSPI1A_SS1_B_LSIO_GPIO4_IO20                     0x00000021
+                                IMX8QM_QSPI1A_SCLK_LSIO_GPIO4_IO21                      0x00000021
+                                IMX8QM_QSPI1A_DATA3_LSIO_GPIO4_IO23                     0x00000021
+                                IMX8QM_QSPI1A_DATA2_LSIO_GPIO4_IO24                     0x00000021
+                                IMX8QM_QSPI1A_DATA1_LSIO_GPIO4_IO25                     0x00000021
+                                IMX8QM_QSPI1A_DATA0_LSIO_GPIO4_IO26                     0x00000021
+                                IMX8QM_ENET1_RGMII_TXC_LSIO_GPIO6_IO10                  0x00000021
+                                IMX8QM_ENET1_RGMII_TX_CTL_LSIO_GPIO6_IO11               0x00000021
+                                IMX8QM_ENET1_RGMII_TXD0_LSIO_GPIO6_IO12                 0x00000021
+                                IMX8QM_ENET1_RGMII_TXD1_LSIO_GPIO6_IO13                 0x00000021
+                                IMX8QM_ENET1_RGMII_TXD2_LSIO_GPIO6_IO14                 0x00000021
+                                IMX8QM_ENET1_RGMII_TXD3_LSIO_GPIO6_IO15                 0x00000021
+                                IMX8QM_ENET1_RGMII_RXC_LSIO_GPIO6_IO16                  0x00000021
+                                IMX8QM_ENET1_RGMII_RX_CTL_LSIO_GPIO6_IO17               0x00000021
+                                IMX8QM_ENET1_RGMII_RXD0_LSIO_GPIO6_IO18                 0x00000021
+                                IMX8QM_ENET1_RGMII_RXD1_LSIO_GPIO6_IO19                 0x00000021
+                                IMX8QM_ENET1_RGMII_RXD2_LSIO_GPIO6_IO20                 0x00000021
+                                IMX8QM_ENET1_RGMII_RXD3_LSIO_GPIO6_IO21                 0x00000021
 			>;
 		};
 	};
 };
 
 &unused_gpios { /* GPIO: iWave Unused GPIO pins */
-	gpios = <&lsio_gpio0 1 0>,
-		<&lsio_gpio0 12 0>,
+	gpios = <&lsio_gpio0 12 0>,
                 <&lsio_gpio0 13 0>,
                 <&lsio_gpio1 4 0>,
                 <&lsio_gpio1 6 0>,
