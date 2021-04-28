@@ -497,12 +497,14 @@ static int sec_mipi_dsim_host_attach(struct mipi_dsi_host *host,
 	if (dsim->channel)
 		return -EINVAL;
 
+#ifndef CONFIG_IWG40M
 	if (!(dsi->mode_flags & MIPI_DSI_MODE_VIDEO)		||
 	    !((dsi->mode_flags & MIPI_DSI_MODE_VIDEO_BURST)	||
 	      (dsi->mode_flags & MIPI_DSI_MODE_VIDEO_SYNC_PULSE))) {
 		dev_err(dev, "unsupported dsi mode\n");
 		return -EINVAL;
 	}
+#endif
 
 	if (dsi->format != MIPI_DSI_FMT_RGB888 &&
 	    dsi->format != MIPI_DSI_FMT_RGB565 &&
@@ -816,6 +818,7 @@ static int sec_mipi_dsim_bridge_attach(struct drm_bridge *bridge)
 	if (!endpoint)
 		return -ENODEV;
 
+#ifndef CONFIG_IWG40M
 	while (endpoint) {
 		/* check the endpoint can attach bridge or not */
 		attach_bridge = of_property_read_bool(endpoint, "attach-bridge");
@@ -823,7 +826,8 @@ static int sec_mipi_dsim_bridge_attach(struct drm_bridge *bridge)
 			endpoint = of_graph_get_next_endpoint(np, endpoint);
 			continue;
 		}
-
+#endif
+	while(endpoint && !next) {
 		remote = of_graph_get_remote_port_parent(endpoint);
 
 		if (!remote || !of_device_is_available(remote)) {

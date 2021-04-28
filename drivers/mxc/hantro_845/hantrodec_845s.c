@@ -1956,7 +1956,8 @@ static int hantro_dev_probe(struct platform_device *pdev)
 				clk_get_rate(hantrodec_data[id].clk.bus));
 
 	hantro_clk_enable(&hantrodec_data[id].clk);
-	pm_runtime_enable(&pdev->dev);
+	/*IWG40M: Disabling Runtime Powermanagement for decoder*/
+	/*pm_runtime_enable(&pdev->dev);*/
 	pm_runtime_get_sync(&pdev->dev);
 	hantro_ctrlblk_reset(&hantrodec_data[id]);
 
