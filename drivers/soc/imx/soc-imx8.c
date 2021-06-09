@@ -13,6 +13,13 @@
 #include <linux/arm-smccc.h>
 #include <linux/of.h>
 
+#if defined (CONFIG_IWG34S) || (CONFIG_IWG37S)
+#include <linux/of_gpio.h>
+#include <linux/gpio.h>
+#include <linux/libfdt.h>
+#include <linux/of_fdt.h>
+#endif
+
 #include <soc/imx/src.h>
 
 #define REV_B1				0x21
@@ -119,7 +126,11 @@ static void __init imx8mm_soc_uid(void)
 	u32 offset = of_machine_is_compatible("fsl,imx8mp") ?
 		     IMX8MP_OCOTP_UID_OFFSET : 0;
 
+#ifdef CONFIG_IWG37S
+	np = of_find_compatible_node(NULL, NULL, "fsl,imx8mn-ocotp");
+#else
 	np = of_find_compatible_node(NULL, NULL, "fsl,imx8mm-ocotp");
+#endif
 	if (!np)
 		return;
 
@@ -243,6 +254,107 @@ static void __init imx8mq_noc_init(void)
 		pr_err("Config NOC for VPU fail!\n");
 }
 
+#if defined (CONFIG_IWG34S) || (CONFIG_IWG37S)
+/* IWG34S: SOM Rev and Board Info*/
+#define        BSP_VERSION             "iW-PRGII-SC-01-R1.0-REL0.1-Linux5.4.70"
+
+static int __init som_revision(void)
+{
+       struct device_node *np;
+       int i, val, err, pins_cnt;
+       unsigned *pins;
+       short revision = 0;
+
+#ifdef CONFIG_IWG37S
+       np = of_find_compatible_node(NULL, NULL, "iw,iwg37s-com");
+       if (!np) {
+               pr_warn("failed to find iwg37m-com node\n");
+               revision =-1;
+               goto put_node;
+       }
+#else
+       np = of_find_compatible_node(NULL, NULL, "iw,iwg34s-com");
+       if (!np) {
+               pr_warn("failed to find iwg34m-com node\n");
+               revision =-1;
+               goto put_node;
+       }
+#endif
+       /* Fill GPIO pin array */
+       pins_cnt = of_gpio_named_count(np, "som-rev-gpios");
+       if (pins_cnt <= 0) {
+               pr_warn("gpios DT property empty / missing\n");
+               revision =-1;
+               goto put_node;
+       }
+
+       pins = kzalloc(pins_cnt * sizeof(unsigned), GFP_KERNEL);
+       if (!pins) {
+               pr_warn("unable to allocate the memory\n");
+               revision =-1;
+               goto put_node;
+       }
+       for (i = 0; i < pins_cnt; i++) {
+               val = of_get_named_gpio(np, "som-rev-gpios",i);
+               if (val < 0) {
+                       pr_warn("unable to get the gpio\n");
+                       revision =-1;
+                       goto entryfail;
+               }
+
+               pins[i] = val;
+
+       }
+       /* Request as a input GPIO and read the value */
+       for (i = 0; i < pins_cnt; i++) {
+               err = gpio_request(pins[i],"som-rev GPIO");
+               if (err){
+                       pr_warn("unable to request for gpio\n");
+                       revision =-1;
+                       goto entryfail;
+               }
+
+               err = gpio_direction_input(pins[i]);
+               if (err) {
+                       pr_warn("unable to set gpio as input\n");
+                       revision =-1;
+                       goto entryfail;
+               }
+
+               revision |= gpio_get_value(pins[i]) << i;
+               gpio_free(pins[i]);
+       }
+
+entryfail:
+       kfree(pins);
+put_node:
+       of_node_put(np);
+       return revision;
+}
+
+static void print_board_info (void)
+{
+       int som_rev, pcb_rev, bom_rev;
+       som_rev = som_revision();
+
+       if (som_rev < 0) {
+               pcb_rev = 0;
+               bom_rev = 0;
+       } else {
+              pcb_rev = ((som_rev) & 0x07) + 1;
+              bom_rev = (((som_rev) & 0x78) >> 3) ;
+       }
+
+       printk ("\n");
+       printk ("Board Info:\n");
+       printk ("\tBSP Version            : %s\n", BSP_VERSION);
+       printk ("\tSOM Version            : iW-PRGII-AP-01-R%x.%x\n", pcb_rev, bom_rev);
+       printk ("\tCPU Unique ID          : 0x%016llX\n",soc_uid);
+       printk ("\n");
+
+}
+#endif
+
 static int __init imx8_soc_init(void)
 {
 	struct soc_device_attribute *soc_dev_attr;
@@ -298,6 +410,10 @@ static int __init imx8_soc_init(void)
 	if (of_machine_is_compatible("fsl,imx8mq"))
 		imx8mq_noc_init();
 
+#if defined (CONFIG_IWG34S) || defined (CONFIG_IWG37S)
+       /* IWG34S/IWG37S: Board and BSP info Print */
+       print_board_info();
+#endif
 	return 0;
 
 free_rev:

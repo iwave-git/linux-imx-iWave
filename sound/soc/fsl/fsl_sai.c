@@ -537,6 +537,17 @@ static int fsl_sai_set_bclk(struct snd_soc_dai *dai, bool tx, u32 freq)
 
 		ret = clk_rate - ratio * freq;
 
+#if defined (CONFIG_IWG34S) || (CONFIG_IWG37S)
+/* IWG37S: HDMI Audio: Assigning clock given by CPU directly */
+	if (ret < savesub) {
+		saveratio = ratio;
+		sai->mclk_id[tx] = id;
+		savesub = ret;
+	}
+	
+	if (ret == 0)
+		break;
+#else
 		/*
 		 * Drop the source that can not be
 		 * divided into the required rate.
@@ -560,6 +571,7 @@ static int fsl_sai_set_bclk(struct snd_soc_dai *dai, bool tx, u32 freq)
 			if (ret == 0)
 				break;
 		}
+#endif
 	}
 
 	if (saveratio == 0) {

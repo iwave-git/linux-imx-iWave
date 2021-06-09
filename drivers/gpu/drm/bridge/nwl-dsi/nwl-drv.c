@@ -1101,7 +1101,12 @@ static int nwl_dsi_encoder_atomic_check(struct drm_encoder *encoder,
 {
 	struct imx_crtc_state *imx_crtc_state = to_imx_crtc_state(crtc_state);
 
+#if defined (CONFIG_IWG34S) || (CONFIG_IWG37S)
+/* IWG34S/IWG37S: LVDS: Assigning rgb format */
+	imx_crtc_state->bus_format = MEDIA_BUS_FMT_RGB888_1X24;
+#else
 	imx_crtc_state->bus_format = MEDIA_BUS_FMT_RGB101010_1X30;
+#endif
 
 	return 0;
 }

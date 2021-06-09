@@ -397,6 +397,17 @@ config SND_SOC_IMX_SII902X
 	 Say Y if you want to add support for SoC audio on an i.MX board with
 	 a sii902x.
 
+config SND_SOC_LT8912_AUDIO
+	tristate "SoC Audio support for lt8912b bridge"
+	depends on OF && I2C
+	select SND_SOC_IMX_PCM_DMA
+	select SND_SOC_FSL_SAI
+	select SND_SOC_FSL_UTILS
+	help
+	 SoC Audio Support for lt8912b bridge
+	 Say Y if u want to add support for SoC audio on an i.MX board with
+	 a lt8912.
+
 config SND_SOC_IMX_WM8958
 	tristate "SoC Audio support for i.MX boards with wm8958"
 	depends on OF && I2C

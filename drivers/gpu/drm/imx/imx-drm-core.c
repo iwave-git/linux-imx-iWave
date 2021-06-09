@@ -121,7 +121,8 @@ static int compare_of(struct device *dev, void *data)
 		 * lcdif is usually RGB888
 		 */
 		if (pdata->of_node == np)
-			legacyfb_depth = 32;
+			//legacyfb_depth = 32;
+			legacyfb_depth = 16;
 #endif
 
 		return pdata->of_node == np;

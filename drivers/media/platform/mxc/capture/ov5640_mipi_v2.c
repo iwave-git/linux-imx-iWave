@@ -1711,6 +1711,8 @@ static int ov5640_probe(struct i2c_client *client,
 	if (IS_ERR(pinctrl))
 		dev_warn(dev, "No pin available\n");
 
+#if !defined (CONFIG_IWG34S) && !defined (CONFIG_IWG37S)
+/* IWG34S/IWG37S: Removing support for power pin */
 	/* request power down pin */
 	sensor->pwn_gpio = of_get_named_gpio(dev->of_node, "pwn-gpios", 0);
 	if (!gpio_is_valid(sensor->pwn_gpio))
@@ -1724,7 +1726,7 @@ static int ov5640_probe(struct i2c_client *client,
 			return retval;
 		}
 	}
-
+#endif
 	/* request reset pin */
 	sensor->rst_gpio = of_get_named_gpio(dev->of_node, "rst-gpios", 0);
 	if (!gpio_is_valid(sensor->rst_gpio))

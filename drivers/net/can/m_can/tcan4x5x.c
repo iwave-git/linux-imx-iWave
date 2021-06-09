@@ -337,9 +337,9 @@ static int tcan4x5x_init(struct m_can_classdev *cdev)
 {
 	struct tcan4x5x_priv *tcan4x5x = cdev->device_data;
 	int ret;
-
+#if 0
 	tcan4x5x_check_wake(tcan4x5x);
-
+#endif
 	ret = tcan4x5x_clear_interrupts(cdev);
 	if (ret)
 		return ret;
@@ -364,14 +364,14 @@ static int tcan4x5x_parse_config(struct m_can_classdev *cdev)
 {
 	struct tcan4x5x_priv *tcan4x5x = cdev->device_data;
 	int ret;
-
+#if 0
 	tcan4x5x->device_wake_gpio = devm_gpiod_get(cdev->dev, "device-wake",
 						    GPIOD_OUT_HIGH);
 	if (IS_ERR(tcan4x5x->device_wake_gpio)) {
 		dev_err(cdev->dev, "device-wake gpio not defined\n");
 		return -EINVAL;
 	}
-
+#endif
 	tcan4x5x->reset_gpio = devm_gpiod_get_optional(cdev->dev, "reset",
 						       GPIOD_OUT_LOW);
 	if (IS_ERR(tcan4x5x->reset_gpio))
@@ -381,11 +381,13 @@ static int tcan4x5x_parse_config(struct m_can_classdev *cdev)
 	if (ret)
 		return ret;
 
+#if 0
 	tcan4x5x->device_state_gpio = devm_gpiod_get_optional(cdev->dev,
 							      "device-state",
 							      GPIOD_IN);
 	if (IS_ERR(tcan4x5x->device_state_gpio))
 		tcan4x5x->device_state_gpio = NULL;
+#endif
 
 	tcan4x5x->power = devm_regulator_get_optional(cdev->dev,
 						      "vsup");

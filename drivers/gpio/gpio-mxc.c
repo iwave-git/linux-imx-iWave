@@ -624,7 +624,12 @@ static int mxc_gpio_probe(struct platform_device *pdev)
 	/* the controller clock is optional */
 	port->clk = devm_clk_get_optional(&pdev->dev, NULL);
 	if (IS_ERR(port->clk))
+#if defined (CONFIG_IWG37S) || (CONFIG_IWG34S)
+/* IWG34S/IWG37S: GPIO: Returning NULL if there is no GPIO clock initialized */
+		port->clk = NULL;
+#else
 		return PTR_ERR(port->clk);
+#endif
 
 	err = clk_prepare_enable(port->clk);
 	if (err) {

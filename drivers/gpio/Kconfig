@@ -384,6 +384,12 @@ config GPIO_MXC
 	select GPIO_GENERIC
 	select GENERIC_IRQ_CHIP
 
+config IMX8M_UNUSED_GPIO
+	def_bool y
+	depends on OF_GPIO && (IWG34S || IWG37S)
+	help
+	 Say yes here to set the unused GPIOs as input in iW-RainboW-G34S or iW-RainboW-G37S platform
+
 config GPIO_MXS
 	def_bool y
 	depends on ARCH_MXS
