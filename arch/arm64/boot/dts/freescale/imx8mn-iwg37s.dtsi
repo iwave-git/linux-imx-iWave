@@ -200,6 +200,13 @@
                                     100>;
                 default-brightness-level = <100>;
         };
+
+        unused_gpios: unused_gpios { /* GPIO: Setting Unused GPIOs as input pins */
+                compatible = "iwave,unused-gpios";
+                pinctrl-names = "default";
+                pinctrl-0 = <&pinctrl_unused_gpio>;
+                status = "okay";
+        };
 };
 
 &mipi_dsi { /* MIPI DSI: MIPI To HDMI Bridge*/
@@ -378,7 +385,7 @@
                 reg = <0x48>;
                 pinctrl-names = "default";
                 pinctrl-0 = <&pinctrl_lt8912>;
-                //ddc-i2c-bus = <&i2c3>;
+                ddc-i2c-bus = <&i2c3>;
                 reset-gpios = <&gpio4 23 GPIO_ACTIVE_LOW>;
                 hpd-gpios = <&gpio3 0 GPIO_ACTIVE_HIGH>;
                 digi,dsi-lanes = <4>;
@@ -456,7 +463,7 @@
                 clock-names = "xclk";
                 assigned-clock-rates = <24000000>;
                 csi_id = <0>;
-                reset-gpios = <&gpio3 6 GPIO_ACTIVE_HIGH>;
+                reset-gpios = <&gpio3 6 GPIO_ACTIVE_LOW>;
                 mclk = <24000000>;
                 mclk_source = <0>;
                 mipi_csi;
@@ -709,6 +716,26 @@
 
 &gpu {
         status = "okay";
+};
+
+&unused_gpios { /* GPIO: iWave Unused GPIO pins */
+        gpios = <&gpio1 3 0>,
+                <&gpio1 7 0>,
+                <&gpio1 8 0>,
+                <&gpio1 13 0>,
+                <&gpio2 7 0>,
+                <&gpio2 8 0>,
+                <&gpio2 11 0>,
+                <&gpio3 7 0>,
+                <&gpio4 21 0>,
+                <&gpio4 22 0>,
+                <&gpio4 27 0>,
+                <&gpio5 1 0>,
+                <&gpio5 3 0>,
+                <&gpio5 4 0>,
+                <&gpio5 20 0>,
+                <&gpio5 24 0>,
+                <&gpio5 25 0>;
 };
 
 &iomuxc {
@@ -1028,6 +1055,28 @@
                         fsl,pins = <
                                 MX8MN_IOMUXC_SPDIF_EXT_CLK_GPIO5_IO5    0x140
                         >; 
+                };
+
+                pinctrl_unused_gpio: unused_gpiogrp{
+                        fsl,pins = <
+                                MX8MN_IOMUXC_GPIO1_IO03_GPIO1_IO3               0x41   
+				MX8MN_IOMUXC_GPIO1_IO07_GPIO1_IO7		0x41 
+				MX8MN_IOMUXC_GPIO1_IO08_GPIO1_IO8		0x41
+				MX8MN_IOMUXC_GPIO1_IO13_GPIO1_IO13		0x41
+				MX8MN_IOMUXC_SD1_DATA5_GPIO2_IO7		0x41
+				MX8MN_IOMUXC_SD1_DATA6_GPIO2_IO8		0x41
+				MX8MN_IOMUXC_SD1_STROBE_GPIO2_IO11		0x41
+				MX8MN_IOMUXC_NAND_DATA01_GPIO3_IO7		0x41
+				MX8MN_IOMUXC_SAI2_RXFS_GPIO4_IO21		0x41
+				MX8MN_IOMUXC_SAI2_RXC_GPIO4_IO22		0x41
+				MX8MN_IOMUXC_SAI2_MCLK_GPIO4_IO27		0x41
+				MX8MN_IOMUXC_SAI3_TXD_GPIO5_IO1			0x41
+				MX8MN_IOMUXC_SPDIF_TX_GPIO5_IO3			0x41
+				MX8MN_IOMUXC_SPDIF_RX_GPIO5_IO4			0x41
+				MX8MN_IOMUXC_I2C4_SCL_GPIO5_IO20		0x41
+				MX8MN_IOMUXC_UART2_RXD_GPIO5_IO24		0x41
+				MX8MN_IOMUXC_UART2_TXD_GPIO5_IO25		0x41
+                        >;
                 };
 	};
 };

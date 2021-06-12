@@ -92,7 +92,7 @@ static void lt8912_init(struct lt8912 *lt)
 	dev_info(lt->dev, "LT8912 ID: %02x, %02x\n",
 		 version[0], version[1]);
 
-	/*gee 1280x800*/
+	/*1280x800*/
 
         regmap_write(lt->regmap[1],0x10,0x01);
         regmap_write(lt->regmap[1],0x11,0x04);
@@ -493,11 +493,10 @@ static int lt8912_connector_get_modes(struct drm_connector *connector)
 			lt->sink_is_hdmi = !!drm_detect_hdmi_monitor(edid);
 			kfree(edid);
 		}
-/*		if (num_modes == 0) {
-			timings = of_get_display_timings(lt->dev->of_node);
-			//dev_warn(lt->dev, "failed to get display timings from EDID\n");
-			//return 0;
-		}*/
+		if (num_modes == 0) {
+			dev_warn(lt->dev, "failed to get display timings from EDID\n");
+			return 0;
+		}
 	} else { /* if not EDID, use dtb timings */
 		timings = of_get_display_timings(lt->dev->of_node);
 
@@ -570,7 +569,7 @@ static void lt8912_bridge_post_disable(struct drm_bridge *bridge)
 static void lt8912_bridge_enable(struct drm_bridge *bridge)
 {
 	struct lt8912 *lt = bridge_to_lt8912(bridge);
-//	lt8912_init_hdmi(lt);
+	lt8912_init_hdmi(lt);
 	lt8912_init(lt);
 }
 
@@ -600,8 +599,7 @@ static int lt8912_bridge_attach(struct drm_bridge *bridge)
 
 	ret = drm_connector_init(bridge->dev, connector,
 				 &lt8912_connector_funcs,
-				 DRM_MODE_CONNECTOR_LVDS);  //DRM_MODE_CONNECTOR_LVDS
-			//	 DRM_MODE_CONNECTOR_HDMIA);  //DRM_MODE_CONNECTOR_LVDS
+				 DRM_MODE_CONNECTOR_HDMIA);  //DRM_MODE_CONNECTOR_LVDS
 	if (ret) {
 		dev_err(lt->dev, "failed to initialize connector\n");
 		return ret;
