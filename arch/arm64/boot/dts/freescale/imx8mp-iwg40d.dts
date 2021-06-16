@@ -170,6 +170,20 @@
         status = "okay";
 };
 
+&uart3 {
+        pinctrl-names = "default";
+        pinctrl-0 = <&pinctrl_uart3>;
+        assigned-clocks = <&clk IMX8MP_CLK_UART3>;
+        assigned-clock-parents = <&clk IMX8MP_SYS_PLL1_80M>;
+        status = "okay";
+
+           gnss {
+                compatible = "u-blox,neo-m8";
+                status = "okay";
+                current-speed = <9600>;
+        };
+};
+
 &i2c2 {
 	clock-frequency = <400000>;
 	pinctrl-names = "default";
@@ -455,6 +469,13 @@
                 >;
         };
 
+        pinctrl_uart3: uart3grp { /*UART3: GNSS IOMUX Pin Configuration*/
+                fsl,pins = <
+			MX8MP_IOMUXC_NAND_CE0_B__UART3_DCE_TX    0x49
+			MX8MP_IOMUXC_NAND_ALE__UART3_DCE_RX   0x49
+                >;
+        };
+
         pinctrl_usb0_reg: usbreggrp { /*USB OverCurrent IOMUX Pin Configuration */
                 fsl,pins = <
                         MX8MP_IOMUXC_GPIO1_IO13__GPIO1_IO13      0x154
@@ -477,8 +498,6 @@
                 fsl,pins = <
                         MX8MP_IOMUXC_GPIO1_IO05__GPIO1_IO05		0x1c4	  
 			MX8MP_IOMUXC_GPIO1_IO15__GPIO1_IO15		0x1c4
-			MX8MP_IOMUXC_NAND_ALE__GPIO3_IO00		0x1c4
-			MX8MP_IOMUXC_NAND_CE0_B__GPIO3_IO01		0x1c4
 			MX8MP_IOMUXC_NAND_DATA00__GPIO3_IO06		0x1c4
 			MX8MP_IOMUXC_NAND_DATA01__GPIO3_IO07		0x1c4
 			MX8MP_IOMUXC_NAND_DQS__GPIO3_IO14		0x1c4
@@ -499,8 +518,6 @@
 &unused_gpios { /* GPIO: iWave Unused GPIO pins */
         gpios = <&gpio1 5  0>,
 		<&gpio1 15 0>,
-		<&gpio3 0  0>,
-		<&gpio3 1  0>,
 		<&gpio3 6  0>,
 		<&gpio3 7  0>,
 		<&gpio3 14 0>,
