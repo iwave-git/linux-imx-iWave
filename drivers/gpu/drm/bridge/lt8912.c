@@ -43,6 +43,7 @@ struct lt8912 {
 	u8 channel_id;
 	unsigned int irq;
 	u8 sink_is_hdmi;
+	u8 connector_type;
 	struct regmap *regmap[3];
 	struct gpio_desc *hpd_gpio;
 	struct gpio_desc *reset_n;
@@ -495,7 +496,8 @@ static int lt8912_connector_get_modes(struct drm_connector *connector)
 		}
 		if (num_modes == 0) {
 			dev_warn(lt->dev, "failed to get display timings from EDID\n");
-			return 0;
+			lt->sink_is_hdmi = 1;
+			drm_add_modes_noedid(connector, 1920, 1080);
 		}
 	} else { /* if not EDID, use dtb timings */
 		timings = of_get_display_timings(lt->dev->of_node);
@@ -569,8 +571,11 @@ static void lt8912_bridge_post_disable(struct drm_bridge *bridge)
 static void lt8912_bridge_enable(struct drm_bridge *bridge)
 {
 	struct lt8912 *lt = bridge_to_lt8912(bridge);
-	lt8912_init_hdmi(lt);
-	lt8912_init(lt);
+
+	if (lt->sink_is_hdmi)
+		lt8912_init_hdmi(lt);
+	else
+		lt8912_init(lt);
 }
 
 static void lt8912_bridge_pre_enable(struct drm_bridge *bridge)
@@ -599,7 +604,7 @@ static int lt8912_bridge_attach(struct drm_bridge *bridge)
 
 	ret = drm_connector_init(bridge->dev, connector,
 				 &lt8912_connector_funcs,
-				 DRM_MODE_CONNECTOR_HDMIA);  //DRM_MODE_CONNECTOR_LVDS
+				 lt->connector_type);
 	if (ret) {
 		dev_err(lt->dev, "failed to initialize connector\n");
 		return ret;
@@ -853,10 +858,12 @@ static int lt8912_probe(struct i2c_client *i2c, const struct i2c_device_id *id)
 
 	backlight_enable(lt->backlight);
 	
+	lt->connector_type = DRM_MODE_CONNECTOR_LVDS; 
 	/* get optional regular DDC I2C bus */
 	ddc_phandle = of_parse_phandle(dev->of_node, "ddc-i2c-bus", 0);
 	if (ddc_phandle) {
 		lt->ddc = of_get_i2c_adapter_by_node(ddc_phandle);
+		lt->connector_type = DRM_MODE_CONNECTOR_HDMIA; 
 		of_node_put(ddc_phandle);
 		if (!(lt->ddc))
 			return -EPROBE_DEFER;
