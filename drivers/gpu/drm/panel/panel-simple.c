@@ -947,6 +947,29 @@ static const struct panel_desc avic_tm070ddh03 = {
 	},
 };
 
+static const struct drm_display_mode ivo_m070gwt4_r0_mode = {
+        .clock = 51200,
+        .hdisplay = 1024,
+        .hsync_start = 1024 + 160,
+        .hsync_end = 1024 + 160 + 4,
+        .htotal = 1024 + 160 + 4 + 156,
+        .vdisplay = 600,
+        .vsync_start = 600 + 17,
+        .vsync_end = 600 + 17 + 1,
+        .vtotal = 600 + 17 + 1 + 17,
+        .vrefresh = 60,
+};
+
+static const struct panel_desc ivo_m070gwt4_r0 = {
+        .modes = &ivo_m070gwt4_r0_mode,
+        .num_modes = 1,
+        .bpc = 8,
+        .size = {
+                .width = 154,
+                .height = 90,
+        },
+};
+
 static const struct drm_display_mode bananapi_s070wv20_ct16_mode = {
 	.clock = 30000,
 	.hdisplay = 800,
@@ -3199,7 +3222,10 @@ static const struct of_device_id platform_of_match[] = {
 	}, {
 		.compatible = "avic,tm070ddh03",
 		.data = &avic_tm070ddh03,
-	}, {
+	},{
+                .compatible = "ivo,m070gwt4",
+                .data = &ivo_m070gwt4_r0,
+        },  {
 		.compatible = "bananapi,s070wv20-ct16",
 		.data = &bananapi_s070wv20_ct16,
 	}, {

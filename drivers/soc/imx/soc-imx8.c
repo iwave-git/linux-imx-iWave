@@ -252,7 +252,7 @@ static void __init imx8mq_noc_init(void)
 #ifdef CONFIG_IWG40M
 
 /* IWG40M: SOM Revision and BSP info */
-#define        BSP_VERSION             "iW-PRGQZ-SC-01-R1.0-REL0.2-Linux5.4.70"
+#define        BSP_VERSION             "iW-PRGQZ-SC-01-R2.0-REL0.1-Linux5.4.70"
 
 static int som_revision(void)
 {
@@ -329,15 +329,15 @@ void print_board_info (void)
 		pcb_rev = 0;
 		bom_rev = 0;
 	} else {
-		pcb_rev = (((som_rev) & 0x30) >> 4) + 1 ;
-		bom_rev = ((som_rev) & 0x0F) ;
+                bom_rev = (((som_rev) & 0x1C) >> 2);
+                pcb_rev = ((som_rev) & 0x03) + 1;
 	}
 
 	printk ("\n");
 	printk ("Board Info:\n");
 	printk ("\tBSP Version     : %s\n", BSP_VERSION);
 	printk ("\tSOM Version     : iW-PRGQZ-AP-01-R%x.%x\n", pcb_rev, bom_rev);
-	printk ("\tCPU Unique ID   : 0x%016llX\n",soc_uid);
+	printk ("\tCPU Unique ID   : 0X%016llX\n",soc_uid);
 	printk ("\n");
 
 }
