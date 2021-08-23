@@ -103,15 +103,6 @@ static int imx8_pcie_phy_init(struct phy *phy)
 		udelay(10);
 	}
 
-#ifdef CONFIG_IWG40M
-	/* setup_deskew_fifo_bypass to workaround ERR050442 */
-	writel(0x32, imx8_phy->base + 0xd8);
-	writel(0x1, imx8_phy->base + 0x480);
-	writel(0x0, imx8_phy->base + 0x488);
-	writel(0x4, imx8_phy->base + 0x73c);
-	writel(0x4, imx8_phy->base + 0x6ec);
-#endif
-
 	if (retries >= PHY_PLL_LOCK_WAIT_MAX_RETRIES) {
 		pr_info("pcie phy pipe clk is not ready\n");
 		return -ETIMEDOUT;
