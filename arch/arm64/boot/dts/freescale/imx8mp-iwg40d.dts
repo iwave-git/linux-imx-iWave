@@ -9,7 +9,7 @@
 #include "imx8mp-iwg40m.dtsi"
 
 / {
-	model = "iWave i.MX8MPlus IWG40M board";
+	model = "iW-RainboW-G40M-i.MX8MP-SMARC";
 	compatible = "fsl,imx8mp-iwave", "fsl,imx8mp";
 
         clocks {

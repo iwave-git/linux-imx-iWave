@@ -337,7 +337,7 @@ void print_board_info (void)
 	printk ("Board Info:\n");
 	printk ("\tBSP Version     : %s\n", BSP_VERSION);
 	printk ("\tSOM Version     : iW-PRGQZ-AP-01-R%x.%x\n", pcb_rev, bom_rev);
-	printk ("\tCPU Unique ID   : 0X%016llX\n",soc_uid);
+	printk ("\tCPU Unique ID   : 0x%016llX\n",soc_uid);
 	printk ("\n");
 
 }
