@@ -252,7 +252,7 @@ static void __init imx8mq_noc_init(void)
 #ifdef CONFIG_IWG40M
 
 /* IWG40M: SOM Revision and BSP info */
-#define        BSP_VERSION             "iW-PRGQZ-SC-01-R2.0-REL0.1-Linux5.4.70"
+#define        BSP_VERSION             "iW-PRGQZ-SC-01-R2.0-REL0.2-Linux5.4.70"
 
 static int som_revision(void)
 {
