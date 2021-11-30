@@ -256,7 +256,7 @@ static void __init imx8mq_noc_init(void)
 
 #if defined (CONFIG_IWG34S) || (CONFIG_IWG37S)
 /* IWG34S: SOM Rev and Board Info*/
-#define        BSP_VERSION             "iW-PRGII-SC-01-R1.0-REL0.1-Linux5.4.70"
+#define        BSP_VERSION             "iW-PRGII-SC-01-R1.0-REL0.2-Linux5.4.70"
 
 static int __init som_revision(void)
 {
