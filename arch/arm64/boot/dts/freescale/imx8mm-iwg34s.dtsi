@@ -115,8 +115,8 @@
                compatible = "iw,iwg34s-com";
                pinctrl-names = "default";
                pinctrl-0 = <&pinctrl_board_cfg>;
-               som-rev-gpios = <&gpio2 20 0 &gpio2 19 0 &gpio3 1 0 &gpio1 0 0 
-                               &gpio1 10 0 &gpio1 11 0 &gpio1 9 0 >;
+               som-rev-gpios = <&gpio1 9 0 &gpio1 11 0 &gpio1 10 0 &gpio1 0 0 
+                               &gpio3 1 0 &gpio2 19 0 &gpio2 20 0 >;
                status = "okay";
         };
 
