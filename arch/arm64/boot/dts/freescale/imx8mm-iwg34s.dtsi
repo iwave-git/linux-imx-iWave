@@ -514,7 +514,7 @@
                  <&clk IMX8MM_CLK_PCIE1_PHY>,
                  <&pcie0_refclk>;
         clock-names = "pcie", "pcie_aux", "pcie_phy", "pcie_bus";
-        ext_osc = <1>;
+        ext_osc = <0>;
         bus-range = <0x00 0xff>;
 	hard-wired = <1>;
         status = "okay";
