@@ -297,6 +297,14 @@
                                 rohm,dvs-run-voltage = <950000>;
                                 rohm,dvs-idle-voltage = <950000>;
                         };
+			
+                        buck3_reg: BUCK3 {
+                                regulator-name = "BUCK3";
+                                regulator-min-microvolt = <900000>;
+                                regulator-max-microvolt = <1000000>;
+                                regulator-boot-on;
+                                regulator-always-on;
+                        };
 
 
                         buck4_reg: BUCK4 {
@@ -344,6 +352,14 @@
                                 regulator-min-microvolt = <1710000>;
                                 regulator-max-microvolt = <1890000>;
 				regulator-boot-on;
+                                regulator-always-on;
+                        };
+
+                        ldo4_reg: LDO4 {
+                                regulator-name = "LDO4";
+                                regulator-min-microvolt = <855000>;
+                                regulator-max-microvolt = <1000000>;
+                                regulator-boot-on;
                                 regulator-always-on;
                         };
 
