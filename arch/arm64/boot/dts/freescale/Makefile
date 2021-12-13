@@ -59,7 +59,7 @@ dtb-$(CONFIG_ARCH_MXC) += imx8mm-evk-ak4497.dtb imx8mm-evk-ak5558.dtb imx8mm-evk
 dtb-$(CONFIG_ARCH_MXC) += imx8mm-evk-8mic-revE.dtb imx8mm-evk-8mic-swpdm.dtb \
 			  imx8mm-evk-iqaudio-dacplus.dtb imx8mm-evk-iqaudio-dacpro.dtb imx8mm-evk-hifiberry-dacplus.dtb
 dtb-$(CONFIG_ARCH_MXC) += imx8mm-ab2.dtb imx8mm-ab2-m4.dtb imx8mm-ddr4-ab2.dtb imx8mm-ddr4-ab2-m4.dtb \
-			  imx8mm-ddr4-ab2-revb.dtb imx8mm-ddr4-ab2-m4-revb.dtb imx8mm-iwg34s-2gb.dtb imx8mm-iwg34s-1gb.dtb
+			  imx8mm-ddr4-ab2-revb.dtb imx8mm-ddr4-ab2-m4-revb.dtb imx8mm-iwg34s-8gb.dtb imx8mm-iwg34s-2gb.dtb imx8mm-iwg34s-1gb.dtb
 dtb-$(CONFIG_ARCH_MXC) += imx8mn-evk.dtb imx8mn-evk-rm67191.dtb imx8mn-ddr4-evk.dtb imx8mn-ddr4-evk-ak5558.dtb \
 			  imx8mn-ddr4-evk-rm67191.dtb imx8mn-ddr4-evk-rpmsg.dtb imx8mn-ddr4-evk-usd-wifi.dtb \
 			  imx8mn-evk-ak5558.dtb imx8mn-evk-rpmsg.dtb imx8mn-evk-8mic-revE.dtb imx8mn-ddr3l-evk.dtb \
