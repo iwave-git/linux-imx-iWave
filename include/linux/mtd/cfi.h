@@ -363,6 +363,10 @@ struct cfi_fixup {
 #define CFI_MFR_FUJITSU		0x0004
 #define CFI_MFR_HYUNDAI		0x00AD
 #define CFI_MFR_INTEL		0x0089
+#ifdef CONFIG_IWG40M
+/* IWG40M:ISSI support customization */
+#define CFI_MFR_ISSI            0x009D
+#endif
 #define CFI_MFR_MACRONIX	0x00C2
 #define CFI_MFR_NEC		0x0010
 #define CFI_MFR_PMC		0x009D

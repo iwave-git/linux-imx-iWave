@@ -772,6 +772,30 @@ static const struct drm_display_mode auo_g101evn010_mode = {
 	.vrefresh = 60,
 };
 
+static const struct display_timing powertip_timing = {
+        .pixelclock = { 68900000, 71100000, 73400000 },
+        .hactive = { 1280, 1280, 1280 },
+        .hfront_porch = { 70, 70, 70 },
+        .hback_porch = { 70, 70, 70 },
+        .hsync_len = { 20, 20, 20 },
+        .vactive = { 800, 800, 800 },
+        .vfront_porch = { 8, 8, 8 },
+        .vback_porch = { 8, 8, 8 },
+        .vsync_len = { 7, 7, 7 },
+       .flags = DISPLAY_FLAGS_PIXDATA_NEGEDGE | DISPLAY_FLAGS_HSYNC_LOW | DISPLAY_FLAGS_VSYNC_LOW,
+};
+
+static const struct panel_desc powertip_lvds = {
+        .timings = &powertip_timing,
+        .num_timings = 1,
+        .bpc = 6,
+        .size = {
+                .width = 217,
+                .height = 136,
+        },
+        .bus_format = MEDIA_BUS_FMT_RGB888_1X24,
+};
+
 static const struct panel_desc auo_g101evn010 = {
 	.modes = &auo_g101evn010_mode,
 	.num_modes = 1,
@@ -3181,6 +3205,9 @@ static const struct of_device_id platform_of_match[] = {
 	}, {
 		.compatible = "auo,g101evn010",
 		.data = &auo_g101evn010,
+	}, {
+                .compatible = "powertip",
+                .data = &powertip_lvds,
 	}, {
 		.compatible = "auo,g104sn02",
 		.data = &auo_g104sn02,

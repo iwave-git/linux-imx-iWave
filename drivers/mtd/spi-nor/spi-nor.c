@@ -240,6 +240,11 @@ struct flash_info {
 
 #define JEDEC_MFR(info)	((info)->id[0])
 
+#ifdef CONFIG_IWG40M
+/* IWG40M:ISSI support customization */
+const struct flash_info *info_issi;
+#endif
+
 /**
  * spi_nor_spimem_xfer_data() - helper function to read/write data to
  *                              flash's memory region
@@ -2245,6 +2250,10 @@ static const struct flash_info spi_nor_ids[] = {
 
 	/* ISSI */
 	{ "is25cd512",  INFO(0x7f9d20, 0, 32 * 1024,   2, SECT_4K) },
+#ifdef CONFIG_IWG40M
+	{ "is25wp016d", INFO(0x9d7015, 0, 64 * 1024, 32,
+			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
+#endif
 	{ "is25lq040b", INFO(0x9d4013, 0, 64 * 1024,   8,
 			SECT_4K | SPI_NOR_DUAL_READ | SPI_NOR_QUAD_READ) },
 	{ "is25lp016d", INFO(0x9d6015, 0, 64 * 1024,  32,
@@ -3452,6 +3461,16 @@ static int spi_nor_parse_bfpt(struct spi_nor *nor,
 
 		erasesize = 1U << erasesize;
 		opcode = (half >> 8) & 0xff;
+#ifdef CONFIG_IWG40M
+		/* IWG40M:ISSI support customization */
+		if (!(JEDEC_MFR(info_issi) == SNOR_MFR_ISSI)) {
+			if (erasesize == SZ_4K) {
+				spi_nor_set_erase_settings_from_bfpt(&erase_type[i], erasesize,
+						opcode, i);
+				break;
+			}
+		}
+#endif
 		erase_mask |= BIT(i);
 		spi_nor_set_erase_settings_from_bfpt(&erase_type[i], erasesize,
 						     opcode, i);
@@ -4412,7 +4431,12 @@ static void spi_nor_manufacturer_init_params(struct spi_nor *nor)
 	case SNOR_MFR_MACRONIX:
 		macronix_set_default_init(nor);
 		break;
-
+#ifdef CONFIG_IWG40M
+		/* IWG40M:ISSI support customization */
+	case SNOR_MFR_ISSI:
+		info_issi = nor->info;
+		break;
+#endif
 	case SNOR_MFR_ST:
 	case SNOR_MFR_MICRON:
 		st_micron_set_default_init(nor);

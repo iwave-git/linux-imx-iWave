@@ -15,6 +15,12 @@
 
 #include <soc/imx/src.h>
 
+#ifdef CONFIG_IWG40M
+#include <linux/of_gpio.h>
+#include <linux/gpio.h>
+#include <linux/delay.h>
+#endif
+
 #define REV_B1				0x21
 
 #define IMX8MQ_SW_INFO_B1		0x40
@@ -243,6 +249,164 @@ static void __init imx8mq_noc_init(void)
 		pr_err("Config NOC for VPU fail!\n");
 }
 
+#ifdef CONFIG_IWG40M
+
+/* IWG40M: SOM Revision and BSP info */
+#define        BSP_VERSION             "iW-PRGLZ-SC-01-R1.0-REL0.1-Linux5.4.70"
+
+static int som_revision(int *carrier_pcb, int *carrier_bom)
+{
+	struct device_node *np;
+	int i, val, err, pins_cnt;
+	unsigned *pins;
+	short revision = 0;
+
+	np = of_find_node_by_path("/iwg40m_common");
+	if (!np) {
+		pr_warn("failed to find iwg40m-com node\n");
+		revision =-1;
+		goto put_node;
+	}
+
+	/* Fill GPIO pin array */
+	pins_cnt = of_gpio_named_count(np, "som-rev-gpios");
+	if (pins_cnt <= 0) {
+		pr_warn("gpios DT property empty / missing\n");
+		revision =-1;
+		goto put_node;
+	}
+
+	pins = kzalloc(pins_cnt * sizeof(unsigned), GFP_KERNEL);
+	if (!pins) {
+		pr_warn("unable to allocate the memory\n");
+		revision =-1;
+		goto put_node;
+	}
+	for (i = 0; i < pins_cnt; i++) {
+
+		val = of_get_named_gpio(np, "som-rev-gpios",i);
+		if (val < 0) {
+			pr_warn("unable to get the gpio\n");
+			revision =-1;
+			goto entryfail;
+		}
+		pins[i] = val;
+	}
+
+	/* Request as a input GPIO and read the value */
+	for (i = 0; i < pins_cnt; i++) {
+		err = gpio_request(pins[i],"som-rev GPIO");
+		if (err){
+			pr_warn("unable to request for gpio\n");
+			revision =-1;
+			goto entryfail;
+		}
+
+		err = gpio_direction_input(pins[i]);
+		if (err) {
+			pr_warn("unable to set gpio as input\n");
+			revision =-1;
+			goto entryfail;
+		}
+
+		revision |= gpio_get_value(pins[i]) << i;
+		gpio_free(pins[i]);
+	of_property_read_u32(np, "carrier_bom", carrier_bom);
+        of_property_read_u32(np, "carrier_pcb", carrier_pcb);
+
+	}
+
+entryfail:
+	kfree(pins);
+put_node:
+	of_node_put(np);
+	return revision;
+}
+
+void print_board_info (void)
+{
+	int som_rev, pcb_rev, bom_rev,carrier_pcb,carrier_bom;
+	som_rev = som_revision(&carrier_pcb,&carrier_bom);
+
+	if (som_rev < 0) {
+		pcb_rev = 0;
+		bom_rev = 0;
+	} else {
+                bom_rev = (((som_rev) & 0x1C) >> 2);
+                pcb_rev = ((som_rev) & 0x03) + 1;
+	}
+
+	printk ("\n");
+	printk ("Board Info:\n");
+	printk ("\tBSP Version     : %s\n", BSP_VERSION);
+	printk ("\tSOM Version     : iW-PRGLZ-AP-01-R%x.%x\n", pcb_rev, bom_rev);
+	printk ("\tCPU Unique ID   : 0x%016llX\n",soc_uid);
+	printk ("\tCarrier Board Version  : iW-PRGJJ-AP-01-R%x.%x\n\n", carrier_pcb, carrier_bom);
+
+}
+
+void __init imx8_iwg40m_wifi(void)
+{
+        struct device_node *np;
+        static int wifi_dev_gpio, wifi_host_gpio;
+        static int bt_dev_gpio, bt_host_gpio;
+        static int wl_en_gpio, bt_en_gpio;
+
+        np = of_find_node_by_path("/soc@0/bus@30800000/mmc@30b40000");
+        if (!np) {
+                printk("\n IWG failed to find SDHC1 node\n");
+                goto put_node;
+        }
+
+        wl_en_gpio = of_get_named_gpio(np, "wl-en-gpio", 0);
+        if (gpio_is_valid(wl_en_gpio) &&
+                        !gpio_request_one(wl_en_gpio, GPIOF_OUT_INIT_HIGH, "wl-en")) {
+
+                gpio_set_value(wl_en_gpio, 1);
+        }
+
+        bt_en_gpio = of_get_named_gpio(np, "bt-en-gpio", 0);
+        if (gpio_is_valid(bt_en_gpio) &&
+                        !gpio_request_one(bt_en_gpio, GPIOF_OUT_INIT_HIGH, "bt-en")) {
+
+                gpio_set_value(bt_en_gpio, 1);
+        }
+
+        wifi_host_gpio = of_get_named_gpio(np, "wifi-host-gpio", 0);
+        if (gpio_is_valid(wifi_host_gpio) &&
+                        !gpio_request_one(wifi_host_gpio, GPIOF_IN, "wifi_host")) {
+
+                gpio_direction_input(wifi_host_gpio);
+        }
+
+        wifi_dev_gpio = of_get_named_gpio(np, "wifi-dev-gpio", 0);
+
+        if (gpio_is_valid(wifi_dev_gpio) &&
+                        !gpio_request_one(wifi_dev_gpio, GPIOF_OUT_INIT_HIGH, "wifi_dev")) {
+
+                gpio_set_value(wifi_dev_gpio,1);
+        }
+
+        bt_host_gpio = of_get_named_gpio(np, "bt-host-gpio", 0);
+        if (gpio_is_valid(bt_host_gpio) &&
+                        !gpio_request_one(bt_host_gpio, GPIOF_IN, "bt_host")) {
+
+                gpio_direction_input(bt_host_gpio);
+        }
+
+        bt_dev_gpio = of_get_named_gpio(np, "bt-dev-gpio", 0);
+
+        if (gpio_is_valid(bt_dev_gpio) &&
+                        !gpio_request_one(bt_dev_gpio, GPIOF_OUT_INIT_HIGH, "bt_dev")) {
+
+                gpio_set_value(bt_dev_gpio,1);
+        }
+
+put_node:
+        of_node_put(np);
+}
+#endif
+
 static int __init imx8_soc_init(void)
 {
 	struct soc_device_attribute *soc_dev_attr;
@@ -297,6 +461,13 @@ static int __init imx8_soc_init(void)
 
 	if (of_machine_is_compatible("fsl,imx8mq"))
 		imx8mq_noc_init();
+
+#ifdef CONFIG_IWG40M
+        /* IWG40M: Board and BSP info Print */
+        print_board_info();
+	/* IWG40M: JODY-W2 WIFI-BT Power Sequence */
+	imx8_iwg40m_wifi();
+#endif
 
 	return 0;
 

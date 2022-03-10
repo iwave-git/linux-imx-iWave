@@ -1,0 +1,51 @@
+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+/*
+ * Copyright (C) 2022 iWave System Technologies Pvt Ltd. 
+ */
+
+/dts-v1/;
+
+#include <dt-bindings/usb/pd.h>
+#include "imx8mp-iwg40m-prgjj.dts"
+
+&i2c1 {
+	rpi_panel:rpi_panel@45{
+                reg=<0x45>;
+                compatible="touch-raspberrypi-i2c1";
+                status="okay";
+        };
+
+        polytouch: edt-ft5x06@38 {
+                compatible = "edt,edt-ft5406", "edt,edt-ft5x06";
+                reg = <0x38>;
+                touchscreen-size-y = <480>;
+                touchscreen-size-x = <800>;
+                touchscreen-inverted-y = <1>;
+                touchscreen-inverted-x = <1>;
+                poll-interval = <17>;
+        };
+
+};
+
+&mipi_dsi {
+       status = "okay";
+       fsl,clock-drop-level = <2>;
+      
+	panel@0 {
+	status="disabled";
+	};
+
+	panel@1 {
+                compatible = "rpi,panelv1";
+                reg = <0>;
+                dsi-lanes = <1>;
+                video-mode = <1>;
+                panel-width-mm = <154>;
+                panel-height-mm = <86>;
+                status = "okay";
+        };
+
+
+};
+
+

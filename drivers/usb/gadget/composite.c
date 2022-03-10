@@ -2071,12 +2071,17 @@ static void __composite_unbind(struct usb_gadget *gadget, bool unbind_driver)
 	struct usb_gadget_strings	*gstr = cdev->driver->strings[0];
 	struct usb_string		*dev_str = gstr->strings;
 
-	/* composite_disconnect() must already have been called
-	 * by the underlying peripheral controller driver!
-	 * so there's no i/o concurrency that could affect the
-	 * state protected by cdev->lock.
+	/*
+	 * usb_gadget_disconnect() has already been called by the udc-core
+	 * code, so we shouldn't see any new I/O that could affect the
+	 state protected by cdev->lock.
+	 *
+	 * composite_disconnect() MAY have already been called, but not
+	 * since we asked the UDC to stop passing traffic. Invoke it again
+	 * in case something happened since then.
 	 */
-	WARN_ON(cdev->config);
+	/*IWG40M: Fix for USB as device crash prints*/
+	composite_disconnect(gadget);
 
 	while (!list_empty(&cdev->configs)) {
 		struct usb_configuration	*c;

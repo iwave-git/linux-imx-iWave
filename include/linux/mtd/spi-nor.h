@@ -20,6 +20,10 @@
 #define SNOR_MFR_ATMEL		CFI_MFR_ATMEL
 #define SNOR_MFR_GIGADEVICE	0xc8
 #define SNOR_MFR_INTEL		CFI_MFR_INTEL
+#ifdef CONFIG_IWG40M
+/* IWG40M:ISSI support customization */
+#define SNOR_MFR_ISSI           CFI_MFR_ISSI
+#endif
 #define SNOR_MFR_ST		CFI_MFR_ST	/* ST Micro */
 #define SNOR_MFR_MICRON		CFI_MFR_MICRON	/* Micron */
 #define SNOR_MFR_MACRONIX	CFI_MFR_MACRONIX
@@ -134,6 +138,8 @@
 #define SR_P_ERR		BIT(6)
 
 #define SR_QUAD_EN_MX		BIT(6)	/* Macronix Quad I/O */
+
+#define SR_QUAD_EN_ISSI                BIT(6)  /* ISSI Quad I/O */
 
 /* Enhanced Volatile Configuration Register bits */
 #define EVCR_QUAD_EN_MICRON	BIT(7)	/* Micron Quad I/O */

@@ -318,4 +318,11 @@ config ARCH_ZYNQMP
 	help
 	  This enables support for Xilinx ZynqMP Family
 
+config IWG40M 
+       bool "Enable Support for iWave IWG40M"
+       default n
+       help
+         This enables support for the iWave's IWG40M Platform. If you don't
+         know what to do here, say N
+
 endmenu

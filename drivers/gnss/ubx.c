@@ -13,12 +13,16 @@
 #include <linux/of.h>
 #include <linux/regulator/consumer.h>
 #include <linux/serdev.h>
+#include <linux/gpio/consumer.h>
 
 #include "serial.h"
 
 struct ubx_data {
 	struct regulator *v_bckp;
 	struct regulator *vcc;
+#ifdef CONFIG_IWG40M
+	struct gpio_desc *reset_gpio;
+#endif
 };
 
 static int ubx_set_active(struct gnss_serial *gserial)
@@ -81,6 +85,16 @@ static int ubx_probe(struct serdev_device *serdev)
 
 	data = gnss_serial_get_drvdata(gserial);
 
+#ifdef CONFIG_IWG40M
+	data->reset_gpio = devm_gpiod_get_optional(&serdev->dev, "reset",
+                                                       GPIOD_OUT_LOW);
+        if (IS_ERR(data->reset_gpio))
+		data->reset_gpio = NULL;
+
+	gpiod_set_value(data->reset_gpio, 1); 
+	mdelay(100);
+	gpiod_set_value(data->reset_gpio, 0); 
+#endif
 	data->vcc = devm_regulator_get(&serdev->dev, "vcc");
 	if (IS_ERR(data->vcc)) {
 		ret = PTR_ERR(data->vcc);
