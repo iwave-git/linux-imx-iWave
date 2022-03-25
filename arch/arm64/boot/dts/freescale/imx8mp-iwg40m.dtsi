@@ -303,6 +303,12 @@
 	status = "disabled";
 };
 
+&flexcan2 { /* CAN: FLEXCAN2 */
+        pinctrl-names = "default";
+        pinctrl-0 = <&pinctrl_flexcan2>;
+        status = "disabled";
+};
+
 &hdmi_blk {
         status = "okay";
 };
@@ -542,6 +548,12 @@
 		>;
 	};
 
+	pinctrl_flexcan2: flexcan2grp { /* CAN: FLEXCAN2 IOMUX Pin Configuration */
+                fsl,pins = <
+        		MX8MP_IOMUXC_SAI5_RXD3__CAN2_TX            0x154
+			MX8MP_IOMUXC_SAI5_MCLK__CAN2_RX            0x154 
+                >;
+        };
 
 	pinctrl_i2c1: i2c1grp { /* I2C1: IOMUX Pin Configuration */
 		fsl,pins = <

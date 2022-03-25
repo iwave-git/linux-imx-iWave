@@ -27,12 +27,16 @@
 
 };
 
+&lcdif1 { /*LCD Display controller*/
+        status = "okay";
+};
+
 &mipi_dsi {
-       status = "okay";
-       fsl,clock-drop-level = <2>;
+	status = "okay";
+	fsl,clock-drop-level = <2>;
       
 	panel@0 {
-	status="disabled";
+		status="disabled";
 	};
 
 	panel@1 {
