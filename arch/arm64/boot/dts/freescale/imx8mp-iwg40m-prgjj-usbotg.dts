@@ -1,0 +1,28 @@
+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+/*
+ * Copyright (C) 2022 iWave System Technologies Pvt Ltd.
+ */
+
+/dts-v1/;
+
+#include "imx8mp-iwg40m-prgjj.dts"
+
+/ {
+	/delete-node/ cbtl04gp;
+
+};
+
+&usb_dwc3_0 {  /* USB3.0 Type C */
+        dr_mode = "peripheral"; /* OTG2.0 flashing Supoort */
+        status = "okay";
+
+	/delete-node/ port;
+};
+
+&usb3_phy0 {
+	/delete-property/ vbus-power-supply;
+};
+
+&i2c1{
+        /delete-node/ typec-port@22;
+};
