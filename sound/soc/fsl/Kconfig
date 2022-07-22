@@ -305,6 +305,17 @@ config SND_SOC_IMX_SGTL5000
 	  Say Y if you want to add support for SoC audio on an i.MX board with
 	  a sgtl5000 codec.
 
+config SND_SOC_LT8912_AUDIO
+        tristate "SoC Audio support for lt8912b bridge"
+        depends on OF && I2C
+        select SND_SOC_IMX_PCM_DMA
+        select SND_SOC_FSL_SAI
+        select SND_SOC_FSL_UTILS
+        help
+         SoC Audio Support for lt8912b bridge
+         Say Y if u want to add support for SoC audio on an i.MX board with
+         a lt8912.
+
 config SND_SOC_IMX_SPDIF
 	tristate "SoC Audio support for i.MX boards with S/PDIF"
 	select SND_SOC_IMX_PCM_DMA

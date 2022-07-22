@@ -72,6 +72,11 @@
 #define EDT_DEFAULT_NUM_X		1024
 #define EDT_DEFAULT_NUM_Y		1024
 
+#if defined CONFIG_IWG_COMMON
+/* Adding Polling Support for Touch screen */
+#define POLL_INTERVAL_MS               17      /* 17ms = 60fps */
+#endif
+
 enum edt_pmode {
 	EDT_PMODE_NOT_SUPPORTED,
 	EDT_PMODE_HIBERNATE,
@@ -130,6 +135,10 @@ struct edt_ft5x06_ts_data {
 
 	struct edt_reg_addr reg_addr;
 	enum edt_ver version;
+#if defined CONFIG_IWG_COMMON
+	struct timer_list timer;
+	struct work_struct work_i2c_poll;
+#endif
 };
 
 struct edt_i2c_chip_data {
@@ -278,6 +287,22 @@ static irqreturn_t edt_ft5x06_ts_isr(int irq, void *dev_id)
 out:
 	return IRQ_HANDLED;
 }
+
+#if defined CONFIG_IWG_COMMON
+static void edt_ft5x06_ts_irq_poll_timer(struct timer_list *t)
+{
+	struct edt_ft5x06_ts_data *tsdata = from_timer(tsdata, t, timer);
+	schedule_work(&tsdata->work_i2c_poll);
+	mod_timer(&tsdata->timer, jiffies + msecs_to_jiffies(POLL_INTERVAL_MS));
+}
+
+static void edt_ft5x06_ts_work_i2c_poll(struct work_struct *work)
+{
+	struct edt_ft5x06_ts_data *tsdata = container_of(work,
+			struct edt_ft5x06_ts_data, work_i2c_poll);
+	edt_ft5x06_ts_isr(0, tsdata);
+}
+#endif
 
 static int edt_ft5x06_register_write(struct edt_ft5x06_ts_data *tsdata,
 				     u8 addr, u8 value)
@@ -1234,6 +1259,30 @@ static int edt_ft5x06_ts_probe(struct i2c_client *client,
 
 	i2c_set_clientdata(client, tsdata);
 
+#if defined CONFIG_IWG_COMMON
+	if (client->irq) {
+		irq_flags = irq_get_trigger_type(client->irq);
+		if (irq_flags == IRQF_TRIGGER_NONE)
+			irq_flags = IRQF_TRIGGER_FALLING;
+		irq_flags |= IRQF_ONESHOT;
+
+		error = devm_request_threaded_irq(&client->dev, client->irq,
+				NULL, edt_ft5x06_ts_isr,
+				irq_flags, client->name,
+				tsdata);
+		if (error) {
+			dev_err(&client->dev, "Unable to request touchscreen IRQ.\n");
+			return error;
+		}
+	} else {
+		INIT_WORK(&tsdata->work_i2c_poll,
+				edt_ft5x06_ts_work_i2c_poll);
+		timer_setup(&tsdata->timer, edt_ft5x06_ts_irq_poll_timer, 0);
+		tsdata->timer.expires = jiffies +
+			msecs_to_jiffies(POLL_INTERVAL_MS);
+		add_timer(&tsdata->timer);
+	}
+#else
 	irq_flags = irq_get_trigger_type(client->irq);
 	if (irq_flags == IRQF_TRIGGER_NONE)
 		irq_flags = IRQF_TRIGGER_FALLING;
@@ -1246,6 +1295,7 @@ static int edt_ft5x06_ts_probe(struct i2c_client *client,
 		dev_err(&client->dev, "Unable to request touchscreen IRQ.\n");
 		return error;
 	}
+#endif
 
 	error = devm_device_add_group(&client->dev, &edt_ft5x06_attr_group);
 	if (error)

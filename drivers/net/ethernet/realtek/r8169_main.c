@@ -30,6 +30,7 @@
 #include <linux/ipv6.h>
 #include <asm/unaligned.h>
 #include <net/ip6_checksum.h>
+#include <linux/of.h>
 
 #include "r8169.h"
 #include "r8169_firmware.h"
@@ -5257,7 +5258,10 @@ static void rtl_init_mac_address(struct rtl8169_private *tp)
 	struct net_device *dev = tp->dev;
 	u8 *mac_addr = dev->dev_addr;
 	int rc;
-
+#if defined CONFIG_IWG_COMMON
+        /* IWG34: Required for initializing MAC ID in uboot */
+        tp->pci_dev->dev.of_node = of_find_node_by_path("ethernet1");
+#endif
 	rc = eth_platform_get_mac_address(tp_to_dev(tp), mac_addr);
 	if (!rc)
 		goto done;

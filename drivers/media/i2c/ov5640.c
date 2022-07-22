@@ -2722,10 +2722,20 @@ static int ov5640_set_ctrl_hflip(struct ov5640_dev *sensor, int value)
 	 * - [2]:	ISP mirror
 	 * - [1]:	Sensor mirror
 	 */
+#if defined CONFIG_IWG_COMMON
+if (of_machine_is_compatible("fsl,imx8mn-iwg37m"))
+{
 	return ov5640_mod_reg(sensor, OV5640_REG_TIMING_TC_REG21,
 			      BIT(2) | BIT(1),
-			      (!(value ^ sensor->upside_down)) ?
+			      (value ^ sensor->upside_down) ?
 			      (BIT(2) | BIT(1)) : 0);
+}
+else
+#endif
+        return ov5640_mod_reg(sensor, OV5640_REG_TIMING_TC_REG21,
+                              BIT(2) | BIT(1),
+                              (!(value ^ sensor->upside_down)) ?
+                              (BIT(2) | BIT(1)) : 0);
 }
 
 static int ov5640_set_ctrl_vflip(struct ov5640_dev *sensor, int value)

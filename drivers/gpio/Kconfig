@@ -445,6 +445,12 @@ config GPIO_SCU
 	help
 	  Say Y here to enable the imx8 gpio over SCFW MISC API
 
+config IMX8M_UNUSED_GPIO
+        def_bool y
+        depends on OF_GPIO 
+        help
+        Say yes here to set the unused GPIOs as input in iW-RainboW platform.
+
 config GPIO_MXS
 	bool "Freescale MXS GPIO support" if COMPILE_TEST
 	depends on ARCH_MXS || COMPILE_TEST

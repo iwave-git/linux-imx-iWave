@@ -14,11 +14,18 @@
 #include <linux/regulator/consumer.h>
 #include <linux/serdev.h>
 
+#if defined CONFIG_IWG_COMMON
+#include <linux/gpio/consumer.h>
+#endif
+
 #include "serial.h"
 
 struct ubx_data {
 	struct regulator *v_bckp;
 	struct regulator *vcc;
+#if defined CONFIG_IWG_COMMON
+	struct gpio_desc *reset_gpio;
+#endif
 };
 
 static int ubx_set_active(struct gnss_serial *gserial)
@@ -80,6 +87,15 @@ static int ubx_probe(struct serdev_device *serdev)
 	gserial->gdev->type = GNSS_TYPE_UBX;
 
 	data = gnss_serial_get_drvdata(gserial);
+
+#if defined CONFIG_IWG_COMMON
+	data->reset_gpio = devm_gpiod_get_optional(&serdev->dev, "reset",
+			GPIOD_OUT_LOW);
+	if (IS_ERR(data->reset_gpio))
+		data->reset_gpio = NULL;
+
+	gpiod_set_value(data->reset_gpio, 0);
+#endif
 
 	data->vcc = devm_regulator_get(&serdev->dev, "vcc");
 	if (IS_ERR(data->vcc)) {

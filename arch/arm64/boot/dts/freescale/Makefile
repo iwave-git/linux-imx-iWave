@@ -92,6 +92,10 @@ dtb-$(CONFIG_ARCH_MXC) += imx8mm-icore-mx8mm-edimm2.2.dtb
 dtb-$(CONFIG_ARCH_MXC) += imx8mm-kontron-n801x-s.dtb
 dtb-$(CONFIG_ARCH_MXC) += imx8mm-nitrogen-r2.dtb
 dtb-$(CONFIG_ARCH_MXC) += imx8mm-var-som-symphony.dtb
+dtb-$(CONFIG_ARCH_MXC) += imx8mm-iwg34s.dtb imx8mm-iwg34s-rpmsg-1gb.dtb imx8mm-iwg34s-rpmsg-2gb.dtb \
+                          imx8mn-iwg37s.dtb imx8mn-iwg37s-rpmsg-1gb.dtb imx8mn-iwg37s-rpmsg-2gb.dtb \
+                          imx8mm-iwg34s-rpi-display.dtb imx8mn-iwg37s-rpi-display.dtb \
+                          imx8mm-iwg34s-gnss.dtb imx8mn-iwg37s-gnss.dtb
 dtb-$(CONFIG_ARCH_MXC) += imx8mm-venice-gw71xx-0x.dtb
 dtb-$(CONFIG_ARCH_MXC) += imx8mm-venice-gw72xx-0x.dtb
 dtb-$(CONFIG_ARCH_MXC) += imx8mm-venice-gw73xx-0x.dtb
@@ -101,6 +105,9 @@ dtb-$(CONFIG_ARCH_MXC) += imx8mn-beacon-kit.dtb
 dtb-$(CONFIG_ARCH_MXC) += imx8mn-evk.dtb imx8mn-evk-rm67191.dtb imx8mn-evk-rpmsg.dtb
 dtb-$(CONFIG_ARCH_MXC) += imx8mm-ab2.dtb imx8mm-ab2-m4.dtb imx8mm-ddr4-ab2.dtb imx8mm-ddr4-ab2-m4.dtb \
 			  imx8mm-ddr4-ab2-revb.dtb imx8mm-ddr4-ab2-m4-revb.dtb
+dtb-$(CONFIG_ARCH_MXC) += imx8mm-iwg34m-prevd.dtb imx8mn-iwg37m-prevd.dtb imx8mm-iwg34m-prevd-pcie-eth1.dtb \
+                          imx8mm-iwg34m-rpmsg-2gb.dtb imx8mn-iwg37m-rpmsg-2gb.dtb
+dtb-$(CONFIG_ARCH_MXC) += imx8mm-iwg34m-q7-prgtd.dtb imx8mm-iwg34m-q7-rpmsg-2gb.dtb imx8mn-iwg37m-q7-prgtd.dtb imx8mn-iwg37m-q7-rpmsg-2gb.dtb 
 dtb-$(CONFIG_ARCH_MXC) += imx8mn-evk.dtb imx8mn-evk-rm67191.dtb imx8mn-evk-rpmsg.dtb imx8mn-evk-ak5558.dtb \
 			  imx8mn-evk-8mic-revE.dtb imx8mn-ddr3l-evk.dtb \
 			  imx8mn-evk-iqaudio-dacplus.dtb imx8mn-evk-iqaudio-dacpro.dtb imx8mn-evk-hifiberry-dacplus.dtb \
