@@ -223,7 +223,12 @@ drm_connector_mode_valid(struct drm_connector *connector,
 	return ret;
 }
 
+#if defined CONFIG_IWG_COMMON
+/* IWG34S/IWG37S: HDMI: Reducing polling period to 1 seconds */
+#define DRM_OUTPUT_POLL_PERIOD (1*HZ)
+#else
 #define DRM_OUTPUT_POLL_PERIOD (10*HZ)
+#endif
 /**
  * drm_kms_helper_poll_enable - re-enable output polling.
  * @dev: drm_device

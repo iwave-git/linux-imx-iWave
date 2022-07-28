@@ -339,6 +339,14 @@ config DRM_PANEL_RASPBERRYPI_TOUCHSCREEN
 	  Pi 7" Touchscreen.  To compile this driver as a module,
 	  choose M here.
 
+config DRM_PANEL_RASPBERRYPI_MIPI
+        tristate "Raspberry Pi 7-inch display for IWG34S/IWG37S"
+        depends on OF
+        depends on DRM_MIPI_DSI
+        depends on BACKLIGHT_CLASS_DEVICE
+        help
+         Say Y here if you want to enable support for Raspberry Pi 7 inch display
+
 config DRM_PANEL_RAYDIUM_RM67191
 	tristate "Raydium RM67191 FHD 1080x1920 DSI video mode panel"
 	depends on OF
@@ -346,6 +354,15 @@ config DRM_PANEL_RAYDIUM_RM67191
 	depends on BACKLIGHT_CLASS_DEVICE
 	help
 	  Say Y here if you want to enable support for Raydium RM67191 FHD
+	  (1080x1920) DSI panel.
+
+config DRM_PANEL_RAYDIUM_RM67198
+	tristate "Raydium RM67198 FHD 1080x1920 DSI video mode panel"
+	depends on OF
+	depends on DRM_MIPI_DSI
+	depends on BACKLIGHT_CLASS_DEVICE
+	help
+	  Say Y here if you want to enable support for Raydium RM67198 FHD
 	  (1080x1920) DSI panel.
 
 config DRM_PANEL_RAYDIUM_RM68200

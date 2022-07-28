@@ -1834,6 +1834,19 @@ static int ov5640_probe(struct i2c_client *client,
 
 	OV5640_stream_off(sensor);
 	dev_info(dev, "Camera is found\n");
+
+#ifdef CONFIG_IWG_COMMON
+	/* IWG34M: Adding mirror image fix for IWG34M SODIMM Platform */
+	if (of_machine_is_compatible("fsl,imx8mm-iwg34m"))
+	{
+		ov5640_init_setting_30fps_VGA[49].u8Val=0x00;
+		ov5640_setting_30fps_VGA_640_480[8].u8Val=0x00;
+		ov5640_setting_30fps_NTSC_720_480[8].u8Val=0x00;
+		ov5640_setting_30fps_720P_1280_720[8].u8Val=0x00;
+		ov5640_setting_30fps_1080P_1920_1080[8].u8Val=0x00;
+		ov5640_setting_15fps_QSXGA_2592_1944[8].u8Val=0x00;
+	}
+#endif
 	return retval;
 }
 

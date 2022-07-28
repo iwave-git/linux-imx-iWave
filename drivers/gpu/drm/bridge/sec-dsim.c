@@ -376,6 +376,12 @@ static const struct dsim_hblank_par hblank_2lanes[] = {
 	{ DSIM_HBLANK_PARAM("640x480"  , 60,  18,  66, 138, 2), },
 };
 
+#if defined CONFIG_IWG_COMMON
+static const struct dsim_hblank_par hblank_1lanes[] = {
+        { DSIM_HBLANK_PARAM("640x480"  , 60,   6,  30,  66, 1), },
+};
+#endif
+
 static const struct dsim_hblank_par *sec_mipi_dsim_get_hblank_par(const char *name,
 								  int vrefresh,
 								  int lanes)
@@ -395,6 +401,12 @@ static const struct dsim_hblank_par *sec_mipi_dsim_get_hblank_par(const char *na
 		hblank = hblank_4lanes;
 		size   = ARRAY_SIZE(hblank_4lanes);
 		break;
+#if defined CONFIG_IWG_COMMON 
+        case 1:
+                hblank = hblank_1lanes;
+                size   = ARRAY_SIZE(hblank_1lanes);
+                break;
+#endif
 	default:
 		pr_err("No hblank data for mode %s with %d lanes\n",
 		       name, lanes);
@@ -452,12 +464,15 @@ static int sec_mipi_dsim_host_attach(struct mipi_dsi_host *host,
 	if (dsim->channel)
 		return -EINVAL;
 
-	if ((dsi->mode_flags & MIPI_DSI_MODE_VIDEO)		&&
+#if !defined CONFIG_IWG_COMMON 
+/* IWG34/IWG37: MIPI DSI Support added for Non-Burst Mode With Sync Event video mode */
+	if ((dsi->mode_flags & MIPI_DSI_MODE_VIDEO)		&&	
 	    !((dsi->mode_flags & MIPI_DSI_MODE_VIDEO_BURST)	||
 	      (dsi->mode_flags & MIPI_DSI_MODE_VIDEO_SYNC_PULSE))) {
 		dev_err(dev, "unsupported dsi mode\n");
 		return -EINVAL;
 	}
+#endif
 
 	if (dsi->format != MIPI_DSI_FMT_RGB888 &&
 	    dsi->format != MIPI_DSI_FMT_RGB565 &&

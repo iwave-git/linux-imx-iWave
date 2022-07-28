@@ -1,0 +1,76 @@
+/*
+ * Copyright (c) 2021-22 iWave Systems Technologies Pvt. Ltd.
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+#include "imx8mn-iwg37s.dts"
+
+/delete-node/ &pinctrl_unused_gpio;
+
+&uart3 {
+	gnss {
+		compatible = "u-blox,neo-m8";
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_gnss>;
+		vcc-supply = <&reg_3p3v>;
+		reset-gpios = <&gpio1 14 GPIO_ACTIVE_LOW>;
+		current-speed = <9600>;
+		status = "okay";
+	};
+};
+
+/* Update Unused GPIOs GPIO1_12 and GPIO1_14 is used for GNSS */
+&unused_gpios {
+	/delete-property/ gpios;
+	gpios = <&gpio1 3 0>,
+	      <&gpio1 7 0>,
+	      <&gpio1 8 0>,
+	      <&gpio1 13 0>,
+	      <&gpio2 11 0>,
+	      <&gpio3 7 0>,
+	      <&gpio4 21 0>,
+	      <&gpio4 22 0>,
+	      <&gpio4 27 0>,
+	      <&gpio5 3 0>,
+	      <&gpio5 8 0>,
+	      <&gpio5 24 0>,
+	      <&gpio5 25 0>;
+};
+
+&iomuxc {
+	imx8mn-iwg37s {
+		pinctrl_unused_gpio: unused_gpiogrp {
+			fsl,pins = <
+				MX8MN_IOMUXC_GPIO1_IO03_GPIO1_IO3	0x41
+				MX8MN_IOMUXC_GPIO1_IO07_GPIO1_IO7	0x41
+				MX8MN_IOMUXC_GPIO1_IO08_GPIO1_IO8	0x41
+				MX8MN_IOMUXC_GPIO1_IO13_GPIO1_IO13	0x41
+				MX8MN_IOMUXC_SD1_STROBE_GPIO2_IO11	0x41
+				MX8MN_IOMUXC_NAND_DATA01_GPIO3_IO7	0x41
+				MX8MN_IOMUXC_SAI2_RXFS_GPIO4_IO21       0x41
+				MX8MN_IOMUXC_SAI2_RXC_GPIO4_IO22        0x41
+				MX8MN_IOMUXC_SAI2_MCLK_GPIO4_IO27       0x41
+				MX8MN_IOMUXC_SPDIF_TX_GPIO5_IO3         0x41
+				MX8MN_IOMUXC_ECSPI1_MISO_GPIO5_IO8      0x146
+				MX8MN_IOMUXC_UART2_RXD_GPIO5_IO24       0x41
+				MX8MN_IOMUXC_UART2_TXD_GPIO5_IO25       0x41
+			>;
+		};
+
+		pinctrl_gnss: gnssgrp {
+			fsl,pins = <
+				MX8MN_IOMUXC_GPIO1_IO12_GPIO1_IO12	0x140 /* GNSS Time pulse GPIO*/
+				MX8MN_IOMUXC_GPIO1_IO14_GPIO1_IO14	0x140 /* GNSS Reset GPIO */
+			>;
+		};
+	};
+};

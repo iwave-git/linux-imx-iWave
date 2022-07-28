@@ -383,7 +383,13 @@ static int imx_sec_dsim_bind(struct device *dev, struct device *master,
 	if (ret) {
 		dev_err(dev, "failed to bind sec dsim bridge: %d\n", ret);
 		drm_encoder_cleanup(encoder);
-
+#ifdef CONFIG_IWG_COMMON
+        /* IWG34M: Removing array reset for SODIMM SOM */
+        if (!of_machine_is_compatible("fsl,imx8mm-iwg34m"))
+        {
+		sec_dsim_of_put_resets(dsim_dev);
+	}
+#endif
 		/* If no panel or bridge connected, just return 0
 		 * to make component core to believe it is bound
 		 * successfully to allow other components can be

@@ -13,6 +13,13 @@
 #include <linux/arm-smccc.h>
 #include <linux/of.h>
 
+#if defined CONFIG_IWG_COMMON
+#include <linux/libfdt.h>
+#include <linux/of_fdt.h>
+#include <linux/of_gpio.h>
+#include <linux/gpio.h>
+#endif
+
 #include <soc/imx/src.h>
 
 #define REV_B1				0x21
@@ -192,6 +199,108 @@ static void imx8mq_noc_init(void)
 	kasprintf(GFP_KERNEL, "%d.%d", (soc_rev >> 4) & 0xf,  soc_rev & 0xf) : \
 	"unknown"
 
+#if defined CONFIG_IWG_COMMON
+static void __init board_revision(int *pcb_rev, int *bom_rev, int *carrier_pcb, int *carrier_bom)
+{
+	struct device_node *np;
+	int prop = 0;
+
+        np = of_find_compatible_node(NULL, NULL, "iw,iwg-com");
+        if (!np) {
+                pr_warn("failed to find iwg_common node\n");
+                goto put_node;
+        }
+
+	prop = of_property_read_u32(np, "pcb_rev", pcb_rev);
+	prop |= prop;
+	prop = of_property_read_u32(np, "bom_rev", bom_rev);
+	prop |= prop;
+	prop = of_property_read_u32(np, "carrier_pcb", carrier_pcb);
+	prop |= prop;
+	prop = of_property_read_u32(np, "carrier_bom", carrier_bom);
+	prop |= prop;
+	
+	if(!prop)
+		return;
+	else
+		pr_warn("failed to get board info\n");
+put_node:
+	*pcb_rev = 0;
+	*bom_rev = 0;
+	*carrier_pcb = 0;
+	*carrier_bom = 0;
+	of_node_put(np);
+	return;
+}
+
+static void __init carrier_rst(void)
+{
+       struct device_node *np;
+       static int carrier_rst_gpio;
+
+       np = of_find_compatible_node(NULL, NULL, "iw,iwg-com");
+       if (!np) {
+               pr_warn("failed to find iwg_common node\n");
+               goto put_node;
+       }
+       carrier_rst_gpio = of_get_named_gpio(np, "reset-gpio", 0);
+              gpio_free(carrier_rst_gpio);
+
+       if (gpio_is_valid(carrier_rst_gpio) &&
+                       !gpio_request_one(carrier_rst_gpio, GPIOF_OUT_INIT_HIGH, "carrier-rst")) {
+               gpio_set_value(carrier_rst_gpio,1);
+       }
+put_node:
+       of_node_put(np);
+}
+
+static void print_board_info (void)
+{
+	int pcb_rev, bom_rev, carrier_pcb, carrier_bom;
+	board_revision(&pcb_rev, &bom_rev, &carrier_pcb, &carrier_bom);
+
+	printk ("\n");
+	printk ("Board Info:\n");
+	if (of_machine_is_compatible("fsl,imx8mm-iwg34m"))
+	{
+		printk ("\tBSP Version            : iW-PRFYZ-SC-01-R1.0-REL0.1-Linux5.15.5\n");
+		printk ("\tSOM Version            : iW-PRFYZ-AP-01-R%x.%x\n", pcb_rev, bom_rev);
+		if (carrier_bom < 0) {
+			printk ("\tCarrier Board Version  : iW-PREVD-AP-01-R2.X(Custom)\n");
+		}
+		else
+			printk ("\tCarrier Board Version  : iW-PREVD-AP-01-R2.%x\n",carrier_bom);
+	}
+	else if (of_machine_is_compatible("fsl,imx8mn-iwg37m"))
+	{
+		printk ("\tBSP Version            : iW-PRGJZ-SC-01-R1.0-REL1.0a-Linux5.15.5\n");
+		printk ("\tSOM Version            : iW-PRGJZ-AP-01-R%x.%x\n", pcb_rev, bom_rev);
+		if (carrier_bom < 0) {
+			printk ("\tCarrier Board Version  : iW-PREVD-AP-01-R2.X(Custom)\n");
+		}
+		else
+			printk ("\tCarrier Board Version  : iW-PREVD-AP-01-R2.%x\n",carrier_bom);
+	}
+	else if (of_machine_is_compatible("fsl,imx8mm-iwg34s") || of_machine_is_compatible("fsl,imx8mn-iwg37s"))
+	{
+		printk ("\tBSP Version            : iW-PRGII-SC-01-R1.0-REL1.0a-Linux5.15.5\n");
+		printk ("\tSOM Version            : iW-PRGII-AP-01-R%x.%x\n", pcb_rev, bom_rev);
+	}
+	else if (of_machine_is_compatible("fsl,imx8mm-iwg34m-q7") || of_machine_is_compatible("fsl,imx8mn-iwg37m-q7"))
+	{
+		printk ("\tBSP Version            : iW-PRGNZ-SC-01-R3.0-REL1.0a-Linux5.15.5\n");
+		printk ("\tSOM Version            : iW-PRGNZ-AP-01-R%x.%x\n", pcb_rev, bom_rev);
+		if (carrier_pcb < 0) {
+			printk ("\tCarrier Board Version  : iW-PRGTD-AP-01-R2.X(Custom)\n");
+		}
+		else
+			printk ("\tCarrier Board Version  : iW-PRGTD-AP-01-R%x.%x\n",carrier_pcb, carrier_bom);
+	}
+	printk ("\tCPU Unique ID          : 0x%016llX\n",soc_uid);
+	printk ("\n");
+}
+#endif
+
 static int __init imx8_soc_init(void)
 {
 	struct soc_device_attribute *soc_dev_attr;
@@ -251,6 +360,15 @@ static int __init imx8_soc_init(void)
 	if (of_machine_is_compatible("fsl,imx8mq"))
 		imx8mq_noc_init();
 
+#if defined CONFIG_IWG_COMMON
+	/* IWG34/IWG37: Board and BSP info Print */
+        print_board_info();
+if (of_machine_is_compatible("fsl,imx8mm-iwg34m") || of_machine_is_compatible("fsl,imx8mn-iwg37m"))
+{
+	carrier_rst();
+}
+#endif
+	
 	return 0;
 
 free_serial_number:

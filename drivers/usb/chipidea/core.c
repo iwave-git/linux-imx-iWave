@@ -44,6 +44,13 @@
 #include "otg.h"
 #include "otg_fsm.h"
 
+#if defined CONFIG_IWG_COMMON
+#include <linux/of_gpio.h>
+#include <linux/gpio.h>
+int otg_pwr_gpio = 0;
+int otg_oc_gpio = 0;
+#endif
+
 /* Controller register map */
 static const u8 ci_regs_nolpm[] = {
 	[CAP_CAPLENGTH]		= 0x00U,
@@ -536,6 +543,23 @@ static irqreturn_t ci_irq_handler(int irq, void *data)
 
 	if (ci->is_otg) {
 		otgsc = hw_read_otgsc(ci, ~0);
+
+#if defined CONFIG_IWG_COMMON
+		/* IWG34M/IWG37M: Configuring OTG Power GPIO based on USB OTG_ID */
+		int otg_id = 0, otg_oc = 0;
+		otg_oc = gpio_get_value(otg_oc_gpio);
+
+		otg_id = otgsc & OTGSC_ID;
+		if (otg_oc == 0)
+			gpio_set_value(otg_pwr_gpio, 0);
+		else if (otg_oc == 1)
+		{
+			if (otg_id == 0x100)
+				gpio_set_value(otg_pwr_gpio, 0);
+			else
+				gpio_set_value(otg_pwr_gpio, 1);
+		}	
+#endif
 		if (ci_otg_is_fsm_mode(ci)) {
 			ret = ci_otg_fsm_irq(ci);
 			if (ret == IRQ_HANDLED)
@@ -1255,6 +1279,33 @@ static int ci_hdrc_probe(struct platform_device *pdev)
 	dbg_create_files(ci);
 	mutex_init(&ci->mutex);
 
+#if defined CONFIG_IWG_COMMON
+	/* IWG34M/IWG37M: Configuring OTG Power GPIO based on USB OTG_ID */
+	struct device_node *np;
+if (of_machine_is_compatible("fsl,imx8mm-iwg34m") || of_machine_is_compatible("fsl,imx8mm-iwg34m-q7"))
+{
+	np = of_find_compatible_node(NULL, NULL, "fsl,imx8mm-usb");
+}
+else if(of_machine_is_compatible("fsl,imx8mn-iwg37m") || of_machine_is_compatible("fsl,imx8mn-iwg37m-q7"))
+{
+	np = of_find_compatible_node(NULL, NULL, "fsl,imx8mn-usb");
+}
+	if (np)
+	{
+		otg_pwr_gpio = of_get_named_gpio(np, "otg-pwr-gpio", 0);
+		otg_oc_gpio = of_get_named_gpio(np, "otg-oc-gpio", 0);
+	}
+	else
+	{
+		pr_warn("\nError: Unable to get OTG pwr gpio/ OTG oc gpio input\n");
+		goto put_node;
+	}
+	gpio_request_one(otg_pwr_gpio, GPIOF_DIR_OUT, "usb-pwr");
+	gpio_request_one(otg_oc_gpio, GPIOF_DIR_IN, "usb-oc");
+
+put_node:
+	of_node_put(np);
+#endif
 	return 0;
 
 remove_debug:
