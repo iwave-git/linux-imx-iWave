@@ -283,7 +283,7 @@ static void print_board_info (void)
 	}
 	else if (of_machine_is_compatible("fsl,imx8mm-iwg34s") || of_machine_is_compatible("fsl,imx8mn-iwg37s"))
 	{
-		printk ("\tBSP Version            : iW-PRGII-SC-01-R1.0-REL1.0a-Linux5.15.5\n");
+		printk ("\tBSP Version            : iW-PRGII-SC-01-R1.0-REL0.1-Linux5.15.5\n");
 		printk ("\tSOM Version            : iW-PRGII-AP-01-R%x.%x\n", pcb_rev, bom_rev);
 	}
 	else if (of_machine_is_compatible("fsl,imx8mm-iwg34m-q7") || of_machine_is_compatible("fsl,imx8mn-iwg37m-q7"))
